@@ -1,0 +1,24 @@
+{
+  "name": "urban-vis-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "egg-bin dev",
+    "test": "egg-bin test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "coordtransform": "^2.1.2",
+    "csv-parser": "^2.3.3",
+    "egg": "^2.28.0",
+    "egg-cors": "^2.2.3",
+    "egg-mock": "^4.0.1",
+    "egg-mysql": "^3.0.0",
+    "iconv-lite": "^0.6.2"
+  },
+  "devDependencies": {
+    "egg-bin": "^4.15.0"
+  }
+}

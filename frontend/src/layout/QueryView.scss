@@ -1,0 +1,15 @@
+$grid-line-color : #000000;
+$grid-line-size : 30px;
+
+.query-view{
+  	position: relative;
+	  height: 99%;
+	  width: 100%;
+    overflow-y: scroll;
+    background-color: #FFFBF5;
+    background: -webkit-linear-gradient(rgba(200,200,200,.16) 1px,transparent 1px),-webkit-linear-gradient(0deg,rgba(200,200,200,.16) 1px,transparent 1px),-webkit-linear-gradient(rgba(200,200,200,.12) 1px,transparent 1px),-webkit-linear-gradient(0deg,rgba(200,200,200,.12) 1px,transparent 1px),-webkit-linear-gradient(rgba(200,200,200,.1) 1px,transparent 1px),-webkit-linear-gradient(0deg,rgba(200,200,200,.1) 1px,transparent 1px);
+    background-size: 4em 4em,4em 4em,1em 1em,1em 1em,.5em .5em,.5em .5em;
+}
+.query-view::-webkit-scrollbar { 
+  width: 0 !important
+}

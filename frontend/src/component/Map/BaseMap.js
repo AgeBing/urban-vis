@@ -1,0 +1,24 @@
+import { MAP_INITIAL_VIEW_STATE, MAPBOX_TOKEN, MAP_STYLE } from "./config";
+import MapGL from 'react-map-gl';
+import DeckGL from '@deck.gl/react';
+import React, { Component } from 'react';
+
+export default class BaseMap extends Component{
+  render(){
+    const { layers=[] } = this.props
+    return (
+      <DeckGL
+        controller
+        layers={layers}
+        initialViewState={MAP_INITIAL_VIEW_STATE}
+      >
+        <MapGL
+          reuseMaps
+          mapStyle={MAP_STYLE}
+          preventStyleDiffing={true}
+          mapboxApiAccessToken={MAPBOX_TOKEN}
+        ></MapGL>
+      </DeckGL>
+    );
+  }
+}
