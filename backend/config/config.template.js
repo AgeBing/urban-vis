@@ -6,6 +6,11 @@ exports.cors = {
   origin: [ 'http://localhost:3000' ], 
   allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS'
 }
+exports.security = {
+  csrf: {
+    enable: false,
+  },
+};
 
 const mysqlConfig = {
   'local': {

@@ -17,19 +17,11 @@
 
 ## 整体结构
 
-![图片](http://assets.processon.com/chart_image/5f71c0de07912952ebfc6d55.png)
-
 ### 地图视图 *MapView*
 
 基于 Deck.gl 进行地理视图的绘制，其中地图部分使用 [Mapbox](https://www.mapbox.com/)。
 
-#### MapController
-
-- `layer`  各个图层的数据
--  `select`   地图上筛选
-  - 
-
-#### 地图上框选
+#### 地图框选
 
 使用基于 deck.gl 封装的图形编辑库 nebula.gl 提供的  [EditableGeoJsonLayer](https://nebula.gl/docs/api-reference/layers/editable-geojson-layer)  图层。
 
