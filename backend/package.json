@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@turf/turf": "^5.1.6",
     "coordtransform": "^2.1.2",
     "csv-parser": "^2.3.3",
     "egg": "^2.28.0",

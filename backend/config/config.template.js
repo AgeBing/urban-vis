@@ -1,3 +1,4 @@
+// copy this file as  config.default.js
 exports.keys = "xxxx";
 
 exports.cors = { 

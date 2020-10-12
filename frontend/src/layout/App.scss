@@ -29,14 +29,14 @@ $publicColor: #80B1D3;
 
 .ant-btn-primary {
     color: #fff;
-    background-color: $themeColor;
-    border-color: $themeColor;
+    background-color: $publicColor;
+    border-color: $publicColor;
 }
 
 .ant-btn-primary:hover, .ant-btn-primary:focus {
     color: #fff;
-    background-color: $themeColor2;
-    border-color: $themeColor2;
+    background-color: $publicColor;
+    border-color: $publicColor;
 }
 
 .ant-steps-item-process .ant-steps-item-icon > .ant-steps-icon .ant-steps-icon-dot {

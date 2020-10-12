@@ -1,4 +1,20 @@
 .map-view{
 	height: 99%;
 	width: 100%;
+  position: relative;
+}
+
+.btn-area{
+	position: absolute;
+  bottom: 10px;
+  right: 10px;
+	font-size: 25px;
+}
+
+.time-area{
+	position: absolute;
+  width: 100%;
+  bottom: 70px;
+  display: flex;
+  justify-content: center;
 }

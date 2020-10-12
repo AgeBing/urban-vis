@@ -10,10 +10,11 @@ describe('test/service/weibo.test.js', () => {
     return app.ready();
   });
 
-  it('微博数据', async () => {
-    const ctx = app.mockContext();
-    const weibos = await ctx.service.weibo.list(); 
-    console.log(weibos);
-    assert(weibos);
-  });
+  // it('微博数据', async () => {
+  //   const ctx = app.mockContext();
+  //   const weibos = await ctx.service.weibo.list(); 
+  //   assert(weibos);
+  // });
+
+  
 });
