@@ -31,5 +31,11 @@ npm run dev
   xiamen_poi_gcj02.csv  # 厦门 POI 数据
   ```
 
-  
 
+### 错误解决
+
+####  1.  前端报错
+./node_modules/@turf/difference/index.mjs
+Can't import the named export 'diff' from non EcmaScript module (only default export is available)
+
+参考 https://github.com/uber/nebula.gl/issues/285

@@ -23,10 +23,11 @@ const readFile = (file) => {
     fs.readFile(filePath, 'utf-8', function(err, data) {
       if (err) rj(err)
       // 解决中文编码乱码问题 https://github.com/ashtuchkin/iconv-lite
-      let s = data
-      s = s.replace(/\'/g, '"')  
+      // let s = data
+      // s = s.replace(/\'/g, '"')  
+      // console.log(data)
       try{
-        data =  JSON.parse(s)
+        data =  JSON.parse(data)
         rs(data)
       }catch(e){
         console.log(`Parse ${file} Error`)
@@ -62,6 +63,10 @@ const travelForCsvFile = () =>{
   })
   return files
 }
+
+
+
+
 
 module.exports = {
   csv : readCsv,
