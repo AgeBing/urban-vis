@@ -12,6 +12,7 @@ module.exports = app => {
   router.get('/cross', controller.road.getCrossingSites);
   router.post('/cross',controller.road.postCrossingSites);
   router.post('/crossDailyCount', controller.road.crossDailyConut);
+  router.post('/crossODMapData', controller.road.crossODMapData);
 
   // router.get('/road', controller.road.list);
   // router.get('/crossStatics', controller.road.crossStatics);

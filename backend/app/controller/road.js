@@ -10,6 +10,18 @@ class RoadController extends Controller{
     console.log(cid);
     this.ctx.body = await ctx.service.cross.crossDailyConut(cid);
   }
+
+    /**
+   * 获取各路口过车的ODMap图表统计信息
+   */
+  async crossODMapData(){
+    const { ctx } = this
+    const { cid } =  ctx.request.body;
+    console.log(cid);
+    this.ctx.body = await ctx.service.cross.crossODMapData(cid);
+  }
+
+
   /**
    * 所有路口列表
    */

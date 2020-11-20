@@ -2,6 +2,7 @@ const Service = require('egg').Service;
 
 const TABLE_NAME = "crossings"
 const TABLE_NAME_STATIC = "taxigps20200618_maproads_crossingsta"
+const ODMapTABLE_NAME_STATIC = "taxigps20200618_maproads_crossing_odmapdata"
 
 class CrossService extends Service{
   async passCount(){
@@ -39,6 +40,19 @@ class CrossService extends Service{
       orders: [['GPS_DATE', 'asc']]
     })
     return res
+  }
+    /**
+   * 单个路口统计信息 --> ODMap图表的统计信息
+   */
+  async crossODMapData(cid){
+    const res = await this.app.mysql.query('select * from '+ODMapTABLE_NAME_STATIC+' where (source = ? and target <> ? ) order by count desc limit ?',[cid,cid,5]);
+    let cids = res.map(record=>{
+      return record.target;
+    })
+    cids.push(cid);
+    let sql = 'select * from '+ODMapTABLE_NAME_STATIC+' where source in ('+cids.toString()+') and target in ('+cids.toString()+') and source <> target'
+    const results = await this.app.mysql.query(sql);
+    return {cids,results}
   }
 }
 
