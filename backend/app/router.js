@@ -14,6 +14,7 @@ module.exports = app => {
   // 道路 路口相关
   router.get('/cross', controller.road.getCrossingSites);
   router.post('/cross',controller.road.postCrossingSites);
-  router.post('/crossDailyCount', controller.road.crossDailyConut);
-  
+  router.post('/crossDailyCount', controller.road.crossDailyConut);  
+  router.post('/crossODMapData', controller.road.crossODMapData);
+
 };
