@@ -36,11 +36,16 @@ class TaxiService extends Service{
   /**
    * 按时间和空间查询
    */
-  async query(){
+  async query(time, region){
     const { ctx } = this
-    const { time, region } = ctx.request.body
+    
     let trajs = await this.trajectorys()
     ctx.logger.info("过滤前 Taxi 数量", trajs.length)
+
+    if(!region || !time){
+      return trajs;
+    }
+
     trajs = filterTrajInRegion(trajs, region, time)
     ctx.logger.info("过滤后 Taxi 数量", trajs.length)
     const used = process.memoryUsage().heapUsed / 1024 / 1024;

@@ -20,16 +20,24 @@ class CrossService extends Service{
    */
   async crossList(){
     const res = await this.app.mysql.select(TABLE_NAME);
-    return res.map((cross) => {
+    const allCross =  res.map((cross) => {
       cross['roads'] = cross['roads'].split(';')
       return cross
     })
+
+    let ps =  await Promise.all(allCross.map(async (c) => {
+      c['dailyCount'] = await this.crossDailyConut(c.cid)
+      return c;
+    }));
+
+    ps = ps.filter(p => p.dailyCount.length == 24);
+    return ps;
   }
   /**
    * 查询路口信息
    */
   async queryCrossList(){
-    return []
+    return await this.crossList();
   }
   /**
    * 单个路口统计信息
