@@ -52,7 +52,18 @@ class CrossService extends Service{
     cids.push(cid);
     let sql = 'select * from '+ODMapTABLE_NAME_STATIC+' where source in ('+cids.toString()+') and target in ('+cids.toString()+') and source <> target'
     const results = await this.app.mysql.query(sql);
-    return {cids,results}
+    let records = cids.map(cid=>{
+      return cids.map(cid=>{
+        return 0
+      })
+    });
+    results.forEach(re => {
+      let i = cids.indexOf(re['source']);
+      let j = cids.indexOf(re['target']);
+      records[i][j] = re['count'];
+    });
+    
+    return {cids,records}
   }
 }
 
