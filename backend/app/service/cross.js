@@ -31,6 +31,10 @@ class CrossService extends Service{
     }));
 
     ps = ps.filter(p => p.dailyCount.length == 24);
+
+    await Promise.all(ps.map(async (c) => {
+      c["odmapData"] = await this.crossODMapData(c.cid)
+    }));
     return ps;
   }
   /**
