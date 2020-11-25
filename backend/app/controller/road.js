@@ -32,7 +32,11 @@ class RoadController extends Controller{
    * 查询路口
    */
   async postCrossingSites(){
-    this.ctx.body = await this.ctx.service.cross.queryCrossList();
+    const { ctx } = this
+    const { spaceRegions } = ctx.request.body;
+    const data = await this.ctx.service.cross.queryCrossList(spaceRegions);
+    ctx.logger.info("查询返回 Cross 数量", data.length)
+    this.ctx.body = data
   }
 
   /**

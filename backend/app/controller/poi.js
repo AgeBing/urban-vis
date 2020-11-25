@@ -10,8 +10,8 @@ class POIController extends Controller {
   async query(){
     const { ctx } = this;
     const { spaceRegions } = ctx.request.body;
-    ctx.logger.info("查询返回 POI SpaceRegion", spaceRegions);
-    const data = await ctx.service.poi.query();
+    // ctx.logger.info("查询返回 POI SpaceRegion", spaceRegions);
+    const data = await ctx.service.poi.query(spaceRegions);
     ctx.logger.info("查询返回 POI 数量", data.length)
     this.ctx.body = data; 
   }

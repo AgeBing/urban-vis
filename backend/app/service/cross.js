@@ -1,4 +1,5 @@
 const Service = require('egg').Service;
+const geoUtil = require('../util/geo')
 
 const TABLE_NAME = "crossings"
 const TABLE_NAME_STATIC = "taxigps20200618_maproads_crossingsta"
@@ -40,8 +41,22 @@ class CrossService extends Service{
   /**
    * 查询路口信息
    */
-  async queryCrossList(){
-    return await this.crossList();
+  async queryCrossList(spaceRegions){
+    const { ctx } = this
+    let allCross =  await this.crossList();
+    ctx.logger.info("Query Cross 数量", allCross.length)
+
+    if(!spaceRegions || spaceRegions.length == 0 || spaceRegions[0] == null)
+      return allCross
+    
+    return allCross.filter( cross => {
+      const { lng, lat } = cross
+      const point = [lng, lat]
+      const regions  = spaceRegions.map((_spaceRegion) => {
+        return _spaceRegion.map((p) => [p.lng, p.lat])
+      })
+      return geoUtil.isPointInRegions(point, regions)
+    })
   }
   /**
    * 单个路口统计信息

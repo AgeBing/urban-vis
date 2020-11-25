@@ -41,18 +41,14 @@ class POIService extends Service{
   async query(spaceRegions){
     const { ctx } = this
     let allPois = await this.list();
-    allPois = sample(allPois, 0.01)
+    
+    // 抽取一部分
+    allPois = sample(allPois, 0.1)
+
     ctx.logger.info("Query POI 数量", allPois.length)
 
     if(!spaceRegions || spaceRegions.length == 0 || spaceRegions[0] == null)
       return allPois
-
-    // const boundrys = getRegionBoundry(spaceRegion)
-    // return allPois.filter(poi => {
-    //   let {lon,lat} = poi
-    //   const { lngMax,lngMin,latMax,latMin } = boundrys
-    //   return  lon && lat && ( lon < lngMax && lon > lngMin && lat < latMax && lat > latMin ) 
-    // })
 
     return allPois.filter( poi => {
       const { lon, lat } = poi
