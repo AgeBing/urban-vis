@@ -24,18 +24,18 @@ class CrossService extends Service{
       cross['roads'] = cross['roads'].split(';')
       return cross
     })
-
-    let ps =  await Promise.all(allCross.map(async (c) => {
-      c['dailyCount'] = await this.crossDailyConut(c.cid)
-      return c;
-    }));
-
-    ps = ps.filter(p => p.dailyCount.length == 24);
-
-    await Promise.all(ps.map(async (c) => {
-      c["odmapData"] = await this.crossODMapData(c.cid)
-    }));
-    return ps;
+    // console.log(allCross.length)
+    // let ps =  await Promise.all(allCross.map(async (c) => {
+    //   c['dailyCount'] = await this.crossDailyConut(c.cid)
+    //   return c;
+    // }));
+    // console.log(ps.length)
+    // ps = ps.filter(p => p.dailyCount.length == 24);
+    // await Promise.all(ps.map(async (c) => {
+    //   c["odmapData"] = await this.crossODMapData(c.cid)
+    // }));
+    // console.log(ps.length)
+    return allCross;
   }
   /**
    * 查询路口信息
@@ -57,7 +57,7 @@ class CrossService extends Service{
    * 单个路口统计信息 --> ODMap图表的统计信息
    */
   async crossODMapData(cid){
-    const res = await this.app.mysql.query('select * from '+ODMapTABLE_NAME_STATIC+' where (source = ? and target <> ? ) order by count desc limit ?',[cid,cid,5]);
+    const res = await this.app.mysql.query('select * from '+ ODMapTABLE_NAME_STATIC+' where (source = ? and target <> ? ) order by count desc limit ?',[cid,cid,5]);
     let cids = res.map(record=>{
       return record.target;
     })

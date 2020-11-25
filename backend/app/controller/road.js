@@ -34,5 +34,12 @@ class RoadController extends Controller{
   async postCrossingSites(){
     this.ctx.body = await this.ctx.service.cross.queryCrossList();
   }
+
+  /**
+   * LDA Block 区域列表
+   */
+  async blocks(){
+    this.ctx.body = await this.ctx.service.road.blocks();
+  }
 }
 module.exports = RoadController;

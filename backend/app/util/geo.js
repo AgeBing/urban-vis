@@ -19,6 +19,16 @@ function isPointInRegion(point, region){
   return ptsWithin.features.length == 1
 }
 
+
+function isPointInRegions(point, regions){
+  for(i = 0;i < regions.length;i++){
+    if(isPointInRegion(point, regions[i]))
+      return true
+  }
+  return false
+}
+
 module.exports = {
-  isPointInRegion
+  isPointInRegion,
+  isPointInRegions
 }
