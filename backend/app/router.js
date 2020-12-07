@@ -17,4 +17,7 @@ module.exports = app => {
   router.post('/crossDailyCount', controller.road.crossDailyConut);  
   router.post('/crossODMapData', controller.road.crossODMapData);
   router.get('/block', controller.road.blocks);
+
+  // 旅游相关
+  router.get('/route', controller.tour.routes);
 };
