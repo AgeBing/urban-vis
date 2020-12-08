@@ -15,5 +15,12 @@ class POIController extends Controller {
     ctx.logger.info("查询返回 POI 数量", data.length)
     this.ctx.body = data; 
   }
+  async getCommentsData(){
+    const { ctx } = this;
+    const { pid } = ctx.request.body;
+    ctx.logger.info("查询返回 POI 大众点评数据，pid：", pid);
+    const data = await ctx.service.poi.getCommentsData(pid);
+    this.ctx.body = data; 
+  }
 }
 module.exports = POIController;
