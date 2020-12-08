@@ -6,6 +6,7 @@ module.exports = app => {
   // POI
   router.get('/poi', controller.poi.list);
   router.post('/poi', controller.poi.query);
+  router.post('/poiCommentsData', controller.poi.getCommentsData);
   
   // 出租车
   router.get('/taxi', controller.taxi.list);

@@ -59,6 +59,77 @@ class POIService extends Service{
       return geoUtil.isPointInRegions(point, regions)
     })
   }
+//pid:poi id   获取poi的大众点评数据
+async getCommentsData(pid) {
+
+  let imgUrl,poiName,star = "0",commentsNum = "0",poiType,address,tel,price,comments = [];
+  const sqlBasic = `select * from poi where poi.id = "${pid}"`;
+  let res = await this.app.mysql.query(sqlBasic);
+  if (res.length>0){
+    res = res[0];
+    poiName = res["name"];
+    address = res["address"];
+    // format tel
+    if (res["tel"]=="[]"){
+      tel = "暂无联系方式"
+    }else{
+      tel = res["tel"].split(';');
+      if (tel.length>2) tel = tel.slice(0,2)
+      tel = tel.join(';')
+    }
+    
+    let type = res["type"]
+    if (type!=null){
+      poiType = type.substring(type.indexOf(';')+1,type.length)
+      type = type.substring(0,type.indexOf(';'))//poi对应的大类，用于编码poi颜色
+    }
+    switch(type){
+      case "餐饮服务":
+        let minCharNum = 120;
+        let maxCommentsNum = 2;
+        let sql = `select * from poi_basic_comment where id = "${pid}"`
+        res = await this.app.mysql.query(sql)
+        if(res.length==0) break;
+        else 
+          res = res[0];
+        imgUrl = res["img"]
+        price = res["price"]
+        star = res["rank"]
+        sql = `select * from poicomments where id = "${pid}"`
+        res = await this.app.mysql.query(sql)
+        for(let i=0;i<res.length;i++){
+          let row = res[i]
+          if (row["text"].length<minCharNum) continue;// text大于110，保证评论至少占四行
+          comments.push({unick:row["unick"],score:row["rank"],text:row["text"].replace(/\n/g,'')})
+          if(comments.length==maxCommentsNum) break;
+        }
+        // 手动添加评论，哭了
+        if (comments.length==0) comments=comments.concat(this.getComments())
+        commentsNum = comments.length
+        break;
+        
+      default:
+        break;
+    }
+  }
+
+  return { poiInfo:{imgUrl,poiName,star,commentsNum,poiType,address,tel,price},comments }
+}
+// 构建评价
+getComments(){
+  return [
+    {
+      unick: '是欣不是心',
+      score: '50',
+      text: '已经是第二次过来吃了，第一次是妹妹说这里特别好吃带我过来尝了感觉真的是非常不错呢[薄荷]环境：位置还是比较好找的店内环境还不错，也比较大有一楼跟二楼二楼，我们是选在窗户旁边，还能看到外面的车来车往。[服务铃]服务：服务特别周到，隔一段时间服务员就会过来看一下一汤有没有烧干然后会帮我们加汤。「招牌千张筒锅」味道特别好'
+    },
+    {
+      unick: '张大栗',
+      score: '40',
+      text: '每次我不知道吃什么的时候就会首选这家店，特别养生?，天气转凉，也是很适合带家里的长辈过来尝试。店内环境很不错，主打的骨汤?也很浓郁鲜美，喝下去胃暖暖☕的。「招牌千张筒锅」我每次必点，小份就有三个超大的大骨棒，千张，笋干，腊肠?，一定要点这个！服务员会先帮你乘一碗汤，浓郁的奶白色大骨原汤加点葱花，真的绝了。也会建议在骨髓煮化之前先吃棒骨?，吸管可以直接吸里面的骨髓，嫩滑一点也不腥。抽屉里配备了一次性手套?。吸管?。湿纸巾?，一应俱全。「竹荪」竹荪爽脆的口感我很喜欢，「手工虾滑」?虾滑新鲜，无功无过。「鲜嫩鸭血」切得很薄，嫩滑无腥味。吧台提供自主蘸料和自主水果??，大部分是当季水果，去的时候是冬枣和橘子，都很新鲜，?人均性价比高，冬日暖胃必备?。'
+    }
+  ]
+}
 }
 
 /**
