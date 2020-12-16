@@ -21,7 +21,8 @@ class POIService extends Service{
         name : d.name,
         lon: d.lon,
         lat: d.lat,
-        id: d.id
+        id: d.id,
+        type:d.type?d.type.split(";")[0]:""  
       } 
     })
     .filter(d => isWithinInXiamengland(d) )  // 过滤岛内
@@ -63,6 +64,23 @@ class POIService extends Service{
       return geoUtil.isPointInRegions(point, regions)
     })
   }
+async getPOITypes(){
+  const sqlBasic = `select distinct poi.type from poi`;
+  let res = await this.app.mysql.query(sqlBasic);
+  let poiTypes = [];
+  for(let i=0;i<res.length;i++){
+    let type = res[i]["type"]
+    if(type!=null)
+    {
+      type = type.substring(0,type.indexOf(';'));//poi对应的大类，用于编码poi颜色
+      (poiTypes.indexOf(type)==-1) && poiTypes.push(type);
+    }
+    
+    
+  }
+  console.log(poiTypes);
+  return poiTypes;
+}
 //pid:poi id   获取poi的大众点评数据
 async getCommentsData(pid) {
 
