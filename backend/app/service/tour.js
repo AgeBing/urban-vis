@@ -20,7 +20,8 @@ class TourService extends Service{
     //   }
     // })
     // return data
-    const r1_reverse = r1.reduce((prev, curv, i, arr) => arr.unshift(curv), [])
+    const r1_reverse = r1.concat([]).reverse();
+    console.log(r1_reverse);
     return [r1_reverse, r2, r3]
   }
 }
