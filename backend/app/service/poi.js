@@ -6,6 +6,7 @@ const geoUtil = require('../util/geo')
 // 从文件读取
 const fileName = 'xiamen_poi_gcj02.csv'  // 厦门岛所有POI
 
+
 class POIService extends Service{
   
   /**
@@ -13,14 +14,17 @@ class POIService extends Service{
    */
   async list(){
     const { ctx } = this
-    const data = await fileReader.csv(fileName)
+    let data = await fileReader.csv(fileName)
     ctx.logger.info("POI 数量", data.length)
-    const filter = data.map(d => ({
-      name : d.name,
-      lon: d.lon,
-      lat: d.lat,
-      type:d.type?d.type.split(";")[0]:""  
-    }))
+    const filter = data.map(d => {
+      return {
+        name : d.name,
+        lon: d.lon,
+        lat: d.lat,
+        id: d.id,
+        type:d.type?d.type.split(";")[0]:""  
+      } 
+    })
     .filter(d => isWithinInXiamengland(d) )  // 过滤岛内
     // ctx.logger.info("过滤后 POI 数量", filter.length)
     return filter.map(poi => coorUtil.gcj02towgs84(poi))
