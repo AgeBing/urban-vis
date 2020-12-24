@@ -71,8 +71,8 @@ class CrossService extends Service{
     /**
    * 单个路口统计信息 --> ODMap图表的统计信息
    */
-  async crossODMapData(cid){
-    const res = await this.app.mysql.query('select * from '+ ODMapTABLE_NAME_STATIC+' where (source = ? and target <> ? ) order by count desc limit ?',[cid,cid,5]);
+  async crossODMapData(cid,splitNumber){
+    const res = await this.app.mysql.query('select * from '+ ODMapTABLE_NAME_STATIC+' where (source = ? and target <> ? ) order by count desc limit '+splitNumber,[cid,cid]);
     let cids = res.map(record=>{
       return record.target;
     })
@@ -89,7 +89,6 @@ class CrossService extends Service{
       let j = cids.indexOf(re['target']);
       records[i][j] = re['count'];
     });
-    
     return {cids,records}
   }
 }

@@ -10,7 +10,10 @@ class TaxiController extends Controller {
 
   async query(){
     const { ctx } = this;
-    const data = await ctx.service.taxi.query();
+    let {startTime,endTime,spaceRegions} = ctx.request.body;
+    startTime = "2020-06-18 12:00:00"
+    endTime = "2020-06-18 18:00:00"
+    const data = await ctx.service.taxi.query([startTime,endTime],spaceRegions);
     ctx.logger.info("查询 Taxi 数量", data.length)
     this.ctx.body = data
   }
