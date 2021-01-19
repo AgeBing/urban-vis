@@ -6,6 +6,7 @@ const geoUtil = require('../util/geo')
 // 从文件读取
 const fileName = 'xiamen_poi_gcj02.csv'  // 厦门岛所有POI
 
+
 class POIService extends Service{
   
   /**
@@ -13,13 +14,17 @@ class POIService extends Service{
    */
   async list(){
     const { ctx } = this
-    const data = await fileReader.csv(fileName)
+    let data = await fileReader.csv(fileName)
     ctx.logger.info("POI 数量", data.length)
-    const filter = data.map(d => ({
-      name : d.name,
-      lon: d.lon,
-      lat: d.lat    
-    }))
+    const filter = data.map(d => {
+      return {
+        name : d.name,
+        lon: d.lon,
+        lat: d.lat,
+        id: d.id,
+        type:d.type?d.type.split(";")[0]:""  
+      } 
+    })
     .filter(d => isWithinInXiamengland(d) )  // 过滤岛内
     // ctx.logger.info("过滤后 POI 数量", filter.length)
     return filter.map(poi => coorUtil.gcj02towgs84(poi))
@@ -59,6 +64,23 @@ class POIService extends Service{
       return geoUtil.isPointInRegions(point, regions)
     })
   }
+async getPOITypes(){
+  const sqlBasic = `select distinct poi.type from poi`;
+  let res = await this.app.mysql.query(sqlBasic);
+  let poiTypes = [];
+  for(let i=0;i<res.length;i++){
+    let type = res[i]["type"]
+    if(type!=null)
+    {
+      type = type.substring(0,type.indexOf(';'));//poi对应的大类，用于编码poi颜色
+      (poiTypes.indexOf(type)==-1) && poiTypes.push(type);
+    }
+    
+    
+  }
+  console.log(poiTypes);
+  return poiTypes;
+}
 //pid:poi id   获取poi的大众点评数据
 async getCommentsData(pid) {
 

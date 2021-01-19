@@ -16,9 +16,9 @@ class RoadController extends Controller{
    */
   async crossODMapData(){
     const { ctx } = this
-    const { cid } =  ctx.request.body;
+    const { cid,splitNumber=5 } =  ctx.request.body;
     console.log(cid);
-    this.ctx.body = await ctx.service.cross.crossODMapData(cid);
+    this.ctx.body = await ctx.service.cross.crossODMapData(cid,splitNumber);
   }
 
 

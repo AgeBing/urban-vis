@@ -20,7 +20,9 @@ class TourService extends Service{
     //   }
     // })
     // return data
-    return [r1, r2, r3]
+    const r1_reverse = r1.concat([]).reverse();
+    console.log(r1_reverse);
+    return [r1_reverse, r2, r3]
   }
 }
 
@@ -59,8 +61,8 @@ const r1 = [
     lat: 24.429501
   },{
     name: "曾厝垵",
-    lng: 118.125201,
-    lat: 24.42515
+    lng: 118.126588,
+    lat: 24.426948
   }
 ]
 

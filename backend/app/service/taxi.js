@@ -41,17 +41,19 @@ class TaxiService extends Service{
   /**
    * 按时间和空间查询
    */
-  async query(time, region){
+  async query(time, regions){ 
     const { ctx } = this
     
     let trajs = await this.trajectorys()
     ctx.logger.info("过滤前 Taxi 数量", trajs.length)
 
-    if(!region || !time){
+    if(!regions || !time){
       return trajs;
     }
-
-    trajs = filterTrajInRegion(trajs, region, time)
+    regions = regions.map(reg=>{
+      return reg.map(point=>[point.lng,point.lat]);
+    })
+    trajs = filterTrajInRegions(trajs, regions, time)
     ctx.logger.info("过滤后 Taxi 数量", trajs.length)
     const used = process.memoryUsage().heapUsed / 1024 / 1024;
     ctx.logger.info(`当前 Memory 用量 ${Math.round(used)} MB`)
@@ -88,16 +90,15 @@ const pointsToTrajs = (ps) => {
 /**
  * 轨迹点变成轨迹
  */
-const filterTrajInRegion = (trajs, region, timeInterval) => {
+const filterTrajInRegions = (trajs, regions, timeInterval) => {
     return trajs.filter( t => {
       const { points } = t
       for(let i = 0;i < points.length;i++){
         let point = points[i]
 
-        let isPointInRegion = region.length === 0 || geoUtil.isPointInRegion( [point['lon'], point['lat']], region )
+        let isPointInRegions = regions.length === 0 || geoUtil.isPointInRegions( [point['lon'], point['lat']], regions )
         let isPointTimeInInterval = timeUtil.isInTimeInterval( point['time'], timeInterval )
-
-        if(isPointInRegion && isPointTimeInInterval){
+        if(isPointInRegions && isPointTimeInInterval){
           return true
         }
       }
