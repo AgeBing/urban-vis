@@ -23,6 +23,7 @@ class Controller extends Component {
     if (this.props.datas !== nextProps.datas ) {
       this.layersFactory(nextProps.datas);
     }else if(!deepCompare(this.props.datas, nextProps.datas)){
+      // 对比内部 data 是否变化
       this.layersFactory(nextProps.datas);
     }
   }
@@ -38,7 +39,8 @@ class Controller extends Component {
     );
   }
   /**
-   * 
+   * 图层数据 使用对应的 图层创建函数进行创建，并返回 layer
+   * @param {Array} datas 
    */
   layersFactory = (datas) => {
     const layers = []
@@ -51,6 +53,9 @@ class Controller extends Component {
     }
     this.setState({ layers });
   }
+  /**
+   * 框选图层
+   */
   initSelectLayer = () => {
     const selectData = {
       id: uuid(),
@@ -105,10 +110,17 @@ class Controller extends Component {
   }
 }
 
+/**
+ * 图层数据
+ */
 Controller.propTypes = {
   datas: PropTypes.array,
 };
 
+
+/**
+ * 工具函数
+ */
 const getCursor = (selectData) =>{
   const cursorDefault = "grab"
   const cursorDraw = "crosshair"

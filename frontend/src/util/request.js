@@ -71,5 +71,21 @@ export default {
     if(!data) return this.getTaxi()
     console.log(data)
     return httpPost(baseUrl + 'taxi' , data)
+  },
+  getRoad(){
+    const url = baseUrl + 'road'
+    return httpGet(url) 
+  },
+  getCross(){
+    const url = baseUrl + 'cross'
+    return httpGet(url) 
+  },
+  getCrossStatics(){
+    const url = baseUrl + 'crossStatics'
+    return httpGet(url) 
+  },
+  getBlocks(){
+    const url = baseUrl + 'block'
+    return httpGet(url)
   }
 }

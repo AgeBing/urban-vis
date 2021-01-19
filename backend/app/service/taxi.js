@@ -1,6 +1,8 @@
 const { Service } = require('egg');
 const geoUtil = require('../util/geo')
 const timeUtil = require('../util/time')
+const fileUtil = require('../util/file')
+const TEMP_TRAJ_FILENAME = 'temp_trajs_20201224.json'
 
 // const TABLE = '20200618order_mini'
 const TABLE = 'taxigps20200618_filter_land_duplicate_slice'
@@ -13,7 +15,7 @@ class TaxiService extends Service{
   async trajsPoints(){
     const { ctx } = this
     ctx.logger.info(`查询数据库表 ${TABLE} `)
-    const limit = 10000 * 200
+    const limit = 10000 * 100
     const offset = 0
     const sql = `SELECT LONGITUDE as lon, LATITUDE as lat, GPS_DATE as time, CARNO as carNo, SLICECOUNT as sliceCount FROM ${TABLE} LIMIT ${offset},${limit}`
     let points = await this.app.mysql.query(sql)
@@ -26,12 +28,15 @@ class TaxiService extends Service{
    * 轨迹点变成轨迹 保存至静态变量
    */
   async trajectorys(){
+
     const { ctx } = this
     if(!TaxiService.trajs){
       const points = await this.trajsPoints()
       TaxiService.trajs =  pointsToTrajs(points)
     }
     return TaxiService.trajs
+    // let trajs = await fileUtil.jsonRead(TEMP_TRAJ_FILENAME)
+    // return trajs
   }
   /**
    * 按时间和空间查询
@@ -50,6 +55,8 @@ class TaxiService extends Service{
     ctx.logger.info("过滤后 Taxi 数量", trajs.length)
     const used = process.memoryUsage().heapUsed / 1024 / 1024;
     ctx.logger.info(`当前 Memory 用量 ${Math.round(used)} MB`)
+       
+    // fileUtil.jsonWrite(TEMP_TRAJ_FILENAME, trajs)
     return trajs
   }
 }
@@ -74,7 +81,7 @@ const pointsToTrajs = (ps) => {
     }
     delete point.carNo
     delete point.sliceCount
-    trajs[trajs.length - 1]['points'].push( point )
+    trajs[trajs.length - 1]['points'].push(point)
   })
   return trajs
 }

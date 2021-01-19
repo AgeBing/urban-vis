@@ -1,7 +1,5 @@
 import { ScatterplotLayer } from '@deck.gl/layers';
 
-
-
 const COLOR  = [166,206,227]
 export const createPOILayer = (data)=>{
   // console.log("createPOILayer data", data)

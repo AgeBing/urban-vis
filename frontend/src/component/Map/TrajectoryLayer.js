@@ -17,7 +17,7 @@ import { PathLayer } from '@deck.gl/layers';
  *    }]
  */
 export const  createTrajectoryLayer = ( data ) => {
-  console.log("createTrajectoryLayer data", data.length)
+  // console.log("createTrajectoryLayer data", data.length)
 	return new PathLayer({
     id: 'path-layer',
     data,
@@ -25,9 +25,9 @@ export const  createTrajectoryLayer = ( data ) => {
     widthMinPixels: 2,
 	  getPath: d => {
       const points = d['points']
-      return points.map( p => [p['lon'], p['lat']])
+      return points.map(p => [p['lon'], p['lat']])
     },
-    getColor: d => [255, 140, 0, 30],
+    getColor: d => [128,163,151, 30],
     getWidth: d => 1,
 	});
 }

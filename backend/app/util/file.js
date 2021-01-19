@@ -65,12 +65,30 @@ const travelForCsvFile = () =>{
 }
 
 
+function writeJson( file , data ){
+	data = JSON.stringify(data);
+  let filePath =  path.resolve(__dirname,  PATH + file);
+	fs.writeFileSync(filePath , data);
+}
 
-
+async function readJson(file) {
+	return new Promise(( resolve, reject ) => {
+      let filePath =  path.resolve(__dirname,  PATH + file);
+	  	fs.readFile(filePath , (err, data) => {
+				if (err) {
+		        reject( err )
+	      	} else {
+	     		resolve( JSON.parse(data) )
+	        }
+		})
+	  })
+}
 
 module.exports = {
   csv : readCsv,
   file: readFile,
   csvFiles: travelForCsvFile,
-  travel
+  travel,
+  jsonWrite: writeJson,
+  jsonRead: readJson
 }

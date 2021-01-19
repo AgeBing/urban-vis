@@ -63,11 +63,19 @@ export default class MapPanel extends Component {
   }
   async layerDataControl() {
     const taxis = await api.getTaxi();
-    // console.log(`taxis : ${taxis.length}`);
+    console.log(`taxis : ${taxis.length}`);
     // const weibo = await api.getWeibo();
     // console.log(`weibos : ${weibo.length}`);
     const pois = await api.getPOI();
-    // console.log(`pois : ${pois.length}`);    
+    console.log(`pois : ${pois.length}`);    
+
+    // const roads = await api.getRoad();
+    // const cross = await api.getCross();
+    // const crossStatics = await api.getCrossStatics();
+
+    // const blocks = await api.getBlocks();
+    // console.log(`blocks : ${blocks.length}`);
+    
     const datas = [
       {
         id: uuid(),
@@ -78,8 +86,35 @@ export default class MapPanel extends Component {
         id: uuid(),
         type: LAYER_TYPES["TRAJ_LAYER"],
         data: taxis,
-      }
+      },
+      // {
+      //   id: uuid(),
+      //   type: LAYER_TYPES["TRIP_LAYER"],
+      //   data: taxis,
+      // },
+      // {
+      //   id: uuid(),
+      //   type: LAYER_TYPES["ROAD_LAYER"],
+      //   data: roads
+      // },
+      // {
+      //   id: uuid(),
+      //   // type: LAYER_TYPES["HEXAGON_LAYER"],
+      //   type: LAYER_TYPES["CROSS_LAYER"],
+      //   data: cross,
+      // },
+      // {
+      //   id: uuid(),
+      //   type: LAYER_TYPES["HEATMAP_LAYER"],
+      //   data: crossStatics,
+      // },
+      // {
+      //   id: uuid(),
+      //   type: LAYER_TYPES["POLYGON_LAYER"],
+      //   data: blocks,
+      // },
     ]
+
     this.setState({ datas })
   }
 

@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "egg-bin dev",
-    "test": "egg-bin test"
+    "dev": "egg-bin --max-old-space-size=4096 dev",
+    "test": "egg-bin test",
+    "debug": "egg-bin debug --inpsect=9110",
+    "start-deploy": "egg-scripts start --daemon --port=7001",
+    "stop-deploy": "egg-scripts stop"
   },
   "author": "",
   "license": "ISC",
@@ -13,10 +16,12 @@
     "@turf/turf": "^5.1.6",
     "coordtransform": "^2.1.2",
     "csv-parser": "^2.3.3",
+    "csv-writer": "^1.6.0",
     "egg": "^2.28.0",
     "egg-cors": "^2.2.3",
     "egg-mock": "^4.0.1",
     "egg-mysql": "^3.0.0",
+    "egg-scripts": "^2.13.0",
     "iconv-lite": "^0.6.2"
   },
   "devDependencies": {
