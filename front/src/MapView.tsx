@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { v4 as uuid } from 'uuid';
 import api from "./util/request";
-import Map from './Map/Controller'
-import { LAYER_TYPES, SELECT_EVENT_NAME } from "./Map/config"
+import Map from './map/Controller'
+import { LAYER_TYPES,  } from "./map/config"
 import './MapView.scss'
-import { TaxiPoint } from './typs'
 
 interface LayerData {
   id?: string,
@@ -17,17 +16,15 @@ function MapView(){
 
   useEffect(() => {
     const fetchData = async () => {
-      const taxisPoints = await api.getTaxi();
+      const taxis = await api.getTaxi();
       const obj = {
-        data: [{
-          points: taxisPoints,
-        }],
+        data: taxis,
         type: LAYER_TYPES["TRAJ_LAYER"],
       }
       setDatas(datas.concat(obj));
     }
     fetchData();
-  }, [])
+  }，[])
 
   console.log(datas)
   return (

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { v4 as uuid } from "uuid";
 // import Event from "../../util/event"
 import BaseMap from "./BaseMap";
-import { LAYER_CONSTRUCTOR, LAYER_TYPES, SELECT_LAYER_MODE, SELECT_EVENT_NAME } from "./config";
+import { LAYER_CONSTRUCTOR, LAYER_TYPES, SELECT_LAYER_MODE } from "./config";
 
 class Controller extends Component {
   constructor(props) {

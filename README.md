@@ -10,6 +10,10 @@
   “*Egg 以及它对应的插件，会提供对应的 index.d.ts 文件方便开发者使用*”
 - 关于 typings 目录：用于放置 d.ts 文件（大部分会自动生成）
 
+
+## 配置
+- 为了让前后端共用 type 下的类型文件，[typescript 配置 alias](https://medium.com/zero-equals-false/how-to-use-module-path-aliases-in-visual-studio-typescript-and-javascript-e7851df8eeaa)、
+  [create-react-app 中配置 alias](https://github.com/facebook/create-react-app/issues/5645)
 ## 整体开发流程
 1. 数据准备
 2. 后端接口

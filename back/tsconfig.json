@@ -20,11 +20,15 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "inlineSourceMap": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "baseUrl": "../",
+    "paths": {
+      "@type/*": ["type/*"],
+    }
   },
   "exclude": [
     "app/public",
     "app/views",
     "node_modules*"
-  ]
+  ],
 }

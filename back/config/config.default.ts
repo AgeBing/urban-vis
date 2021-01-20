@@ -1,5 +1,4 @@
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg';
-
 export default (appInfo: EggAppInfo) => {
   const config = {} as PowerPartial<EggAppConfig>;
 
@@ -17,7 +16,7 @@ export default (appInfo: EggAppInfo) => {
 
   config.cors = { 
     credentials: true,
-    origin: [ 'http://localhost:3000' ], 
+    origin: 'http://localhost:3000', 
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS'
   }
 

@@ -56,7 +56,7 @@ function httpPost(url, data){
   })
 }
 
-export default {
+const api = {
   getPOI(){
     const url = baseUrl + 'poi'
     return httpGet(url)
@@ -91,3 +91,5 @@ export default {
     return httpGet(url)
   }
 }
+
+export default api
