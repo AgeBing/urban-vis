@@ -24,7 +24,7 @@ function MapView(){
       setDatas(datas.concat(obj));
     }
     fetchData();
-  }，[])
+  }, [])
 
   console.log(datas)
   return (
