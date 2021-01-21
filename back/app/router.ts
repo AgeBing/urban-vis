@@ -5,4 +5,6 @@ export default (app: Application) => {
   router.get('/', controller.home.index);
 
   router.get('/taxi', controller.taxi.index);
+  router.get('/phone', controller.phone.index);
+  router.get('/weibo', controller.weibo.index);
 };

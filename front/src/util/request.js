@@ -65,6 +65,10 @@ const api = {
     const url = baseUrl + 'taxi'
     return httpGet(url) 
   },
+  getPhone(){
+    const url = baseUrl + 'phone'
+    return httpGet(url) 
+  },
   getWeibo(){
     const url = baseUrl + 'weibo'
     return httpGet(url)

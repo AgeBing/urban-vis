@@ -1,11 +1,11 @@
 // import { createPOILayer } from "./POILayer";
-// import { createWeiboLayer } from "./WeiboLayer";
+import { createWeiboLayer } from "./layers/WeiboLayer";
 import { createTrajectoryLayer } from "./layers/TrajectoryLayer";
 // import { createAreaSelectLayer } from './AreaSelectLayer'
 // import { createRoadLayer } from './RoadLayer'
 // import { createCrossLayer } from './CrossLayer'
 // import { createHexagonLayer } from './HexagonLayer'
-// import { createHeatmapLayer } from './HeatmapLayer'
+import { createHeatmapLayer } from './layers/HeatmapLayer'
 // import { createPolygonLayer } from './PolygonLayer'
 // import { TripLayer } from './TripLayer'
 
@@ -42,12 +42,12 @@ export const LAYER_TYPES = {
 }
 export const LAYER_CONSTRUCTOR = {
   // POI_LAYER: createPOILayer,
-  // WEIBO_LAYER: createWeiboLayer,
+  WEIBO_LAYER: createWeiboLayer,
   TRAJ_LAYER: createTrajectoryLayer,
   // ROAD_LAYER: createRoadLayer,
   // CROSS_LAYER: createCrossLayer,
   // HEXAGON_LAYER: createHexagonLayer,
-  // HEATMAP_LAYER: createHeatmapLayer,
+  HEATMAP_LAYER: createHeatmapLayer,
   // POLYGON_LAYER: createPolygonLayer,
   // TRIP_LAYER: TripLayer,
 
