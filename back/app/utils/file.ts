@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-
-const DATA_SOURCE_PATH = '../../../backend/data/'
+const DATA_SOURCE_PATH = '../../../data/'
 
 /**
  * 读取 .json 文件
@@ -9,8 +8,7 @@ const DATA_SOURCE_PATH = '../../../backend/data/'
  */
 async function readJson(file) {
 	return new Promise(( resolve, reject ) => {
-      let filePath =  (file.indexOf('/') == -1) ? path.resolve(__dirname,  DATA_SOURCE_PATH + file) : file
-      console.log(file)
+      let filePath = path.resolve(__dirname,  DATA_SOURCE_PATH + file)
 	  	fs.readFile(filePath , (err, data) => {
       if (err) {
           reject( err )

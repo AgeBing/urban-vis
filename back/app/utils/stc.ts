@@ -1,51 +1,48 @@
 import { Cube, CubeConfig, CubeCell, GeoParams, TimeParams } from '@type/cube'
+const fileUtil = require('./file')
+
+const FILES_PATH = {
+  CUBE_CONFIG: 'STCubeConfig.json',
+  CUBE_CELLS: 'STCCube.json'
+}
+
+async function _loadSTCConfig(): Promise<CubeConfig>{
+  const c = await fileUtil.readJson(FILES_PATH['CUBE_CONFIG'])
+  return {
+    MaxLng: c.area.maxLng,
+    MaxLat: c.area.maxLat,
+    MinLng: c.area.minLng,
+    MinLat: c.area.minLat,
+    m: c.splitLngNum,
+    n: c.splitLatNum,
+    width: c.gridWidth,
+    timeSlice: c.splitInterval,
+    t: c.splitTimeNum
+  }
+}
+async function _loaSTCCells(): Promise<CubeCell[]>{
+  const cells:CubeCell[] = await fileUtil.readJson(FILES_PATH['CUBE_CELLS'])
+  return cells
+}
 
 /**
  * 初始化时空立方体
  */
-function _loadCube(): Cube {
-  const config: CubeConfig = {
-    MaxLng: 1,
-    MaxLat: 1,
-    MinLng: 1,
-    MinLat: 1,
-    m: 1, 
-    n: 1, 
-    width: 1,
-    timeSlice: 1,  
-    t: 1, 
-  }
-
-  const cube: Cube = {
-    config: config,
-    cells: [],
-    cellsInFilter: []
-  }
-
-  return cube
-}
-
-function initCube(): Cube{
-  const cube = _loadCube()
-  const c = cube.config
-
-  const cells: CubeCell[] = []
-  let cellId = 0
-  for(let _m = 0; _m < c.m; _m++){
-    for(let _n = 0; _n < c.n; _n++){
-      for(let _t = 0; _t < c.t; _t++){
-        cells.push({
-          id: ++cellId, // todo  ID生成规则待定
-          lng: c.MinLng + _m * c.width,
-          lat: c.MaxLat - _n * c.width,
-          time: c.timeSlice * _t
-        })
-      }
+let cubeInstance:Cube
+async function loadCube(): Promise<Cube>{
+  if(!cubeInstance){
+    const config: CubeConfig = await _loadSTCConfig()
+    const cells:CubeCell[] = await _loaSTCCells()
+    const cube: Cube = {
+      config: config,
+      cells: cells,
+      cellsInFilter: []
     }
+    cubeInstance = cube
   }
-  cube.cells = cells
-  return cube
+  return cubeInstance
 }
+
 
 function _filterInGeo(cube:Cube, params:GeoParams): CubeCell[]{
   return cube.cellsInFilter.filter((cell:CubeCell) => (
@@ -63,17 +60,14 @@ function _filterInTime(cube:Cube, params:TimeParams): CubeCell[]{
 
 /**
  * 输入时空条件，查询符合条件的时空单元
- * @param param0 
  */
 function query({ cube, geoParams, timeParams}){
-  let cellsInFilter: CubeCell[] = cube.cells
-  geoParams && (cellsInFilter = _filterInGeo(cube, geoParams))
-  cube.cellsInFilter = cellsInFilter
-  timeParams && (cellsInFilter = _filterInTime(cube, timeParams))
-  cube.cellsInFilter = cellsInFilter
+  cube.cellsInFilter = cube.cells
+  if(geoParams) cube.cellsInFilter = _filterInGeo(cube, geoParams)
+  if(timeParams) cube.cellsInFilter = _filterInTime(cube, timeParams)
 }
 
 export {
-  initCube,
+  loadCube,
   query
 }
