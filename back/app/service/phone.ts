@@ -2,7 +2,7 @@ import { Service } from 'egg';
 import { PhoneTrajectory }  from '@type/phone'
 const fileUtil = require('../utils/file')
 
-const PATH = '/Users/age/Desktop/code/urban-vis/data/data_in_use/phone.json'
+const PATH = 'data_in_use/phone.json'
 
 
 /**

@@ -1,5 +1,4 @@
 import { Controller } from 'egg';
-
 import { Trajectory } from '@type/base'
 import { TaxiTrajectory } from '@type/taxi'
 
@@ -10,14 +9,23 @@ export default class TaxiController extends Controller {
     ctx.body = res
   }
 
+  public async query(){
+    const { ctx }  = this; 
+    this.logger.info('获取出租车轨迹数据...')
+    this.logger.info('输入条件: ', ctx.request.body)    
+
+    ctx.body = await this.stc();
+  }
+
   public async stc(){
     const { ctx } = this;
+
     console.time('时空立方体范围查询时间: ')
     let cells = await ctx.service.stc.queryCells();
     console.log('时空立方体数量:', cells.length)
-    console.time('范围内轨迹获取')
     let stcTrajs: Trajectory[] = await ctx.service.stc.trajectoryInCells(cells);
     console.timeEnd('时空立方体范围查询时间: ')
+
     console.time('范围内轨迹获取时间: ')
     let taxiTrajs: TaxiTrajectory[] = []
     stcTrajs.map(t => {
@@ -36,6 +44,6 @@ export default class TaxiController extends Controller {
     //       points: t.segments.reduce((a,b)=> a.concat(b),[])
     //   })
     // })
-    ctx.body = taxiTrajs
+    return taxiTrajs
   }
 }
