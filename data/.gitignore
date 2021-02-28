@@ -2,5 +2,7 @@
 
 
 data_in_use/
+data_in_bishe/
 STCubeData/
+scripts/phone.py
 __pycache__/
