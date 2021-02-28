@@ -22,5 +22,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+.vscode/
+back/.github/
 *.code-workspace
 /原始数据
