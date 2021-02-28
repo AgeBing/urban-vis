@@ -17,27 +17,26 @@ function MapView(){
   useEffect(() => {
     const fetchData = async () => {
       let dataObjs = []
-      const taxis = await api.getTaxi();
+      const taxis = await api.getTaxiSTC();
       dataObjs.push({
         data: taxis,
         type: LAYER_TYPES["TRAJ_LAYER"],
       })
+      // const weibos = await api.getWeibo();
+      // dataObjs.push({
+      //   data: weibos,
+      //   type: LAYER_TYPES["WEIBO_LAYER"],
+      // })
+      // dataObjs.push({
+      //   data: weibos,
+      //   type: LAYER_TYPES["HEATMAP_LAYER"],
+      // })
 
-      const weibos = await api.getWeibo();
-      dataObjs.push({
-        data: weibos,
-        type: LAYER_TYPES["WEIBO_LAYER"],
-      })
-      dataObjs.push({
-        data: weibos,
-        type: LAYER_TYPES["HEATMAP_LAYER"],
-      })
-
-      const phones = await api.getPhone();
-      dataObjs.push({
-        data: phones,
-        type: LAYER_TYPES["TRAJ_LAYER"],
-      })
+      // const phones = await api.getPhone();
+      // dataObjs.push({
+      //   data: phones,
+      //   type: LAYER_TYPES["TRAJ_LAYER"],
+      // })
 
       setDatas(datas.concat(dataObjs));
     }

@@ -65,6 +65,10 @@ const api = {
     const url = baseUrl + 'taxi'
     return httpGet(url) 
   },
+  getTaxiSTC(){
+    const url = baseUrl + 'stc'
+    return httpGet(url) 
+  },
   getPhone(){
     const url = baseUrl + 'phone'
     return httpGet(url) 

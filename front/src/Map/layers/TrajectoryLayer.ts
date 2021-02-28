@@ -12,7 +12,8 @@ export const  createTrajectoryLayer = ( data: TaxiTrajectory[] |  PhoneTrajector
       const points: TaxiPoint[] | PhonePoint[] = d['points']
       return points.map(p => [p['longitude'], p['latitude']])
     },
-    getColor: (d:any) => [128,163,151, 20],
+    // getColor: (d:any) => [128,163,151, 20],
+    getColor: (d:any) => [128,163,151, 150],
     getWidth: (d:any) => 1,
 	});
 }

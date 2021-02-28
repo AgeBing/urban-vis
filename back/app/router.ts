@@ -7,4 +7,6 @@ export default (app: Application) => {
   router.get('/taxi', controller.taxi.index);
   router.get('/phone', controller.phone.index);
   router.get('/weibo', controller.weibo.index);
+
+  router.get('/stc', controller.taxi.stc);
 };
