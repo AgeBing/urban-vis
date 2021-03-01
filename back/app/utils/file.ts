@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const DATA_SOURCE_PATH = '../../../data/'
+
+const DATA_SOURCE_PATH = '../../../data/node-server-data/'
 
 /**
  * 读取 .json 文件

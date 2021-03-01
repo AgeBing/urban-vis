@@ -1,7 +1,7 @@
 import { Service } from 'egg';
 import { Cube, CubeCell, GeoParams, TimeParams } from '@type/cube'
 import { Trajectory, Point } from '@type/base'
-import { query, loadCube } from '../utils/stc'
+import { query, loadCube, timeToSliceIndex } from '../utils/stc'
 const fileUtil = require('../utils/file')
 
 export default class STC extends Service{
@@ -10,18 +10,41 @@ export default class STC extends Service{
    * 查询符合条件的立方体id
    */
   public async queryCells(): Promise<CubeCell[]>{
+    const { ctx } = this
     const cube: Cube = await loadCube()
     // console.log('Load Cube:', cube)
-    const geoParams: GeoParams = { // https://lbs.qq.com/tool/getpoint/index.html
-      MaxLng: 120.707524,
-      MinLng: 120.623029,
-      MaxLat: 28.027669,
-      MinLat: 27.988246
+    // const geoParams: GeoParams = { // https://lbs.qq.com/tool/getpoint/index.html
+    //   MaxLng: 120.707524,
+    //   MinLng: 120.623029,
+    //   MaxLat: 28.027669,
+    //   MinLat: 27.988246
+    // }
+    // const timeParams: TimeParams = {
+    //   MinTime: 12,
+    //   MaxTime: 50
+    // }
+
+    /**
+      *  // geo: [maxlng, minlng, maxlat, minlat]
+      *  geo: [120.623029, 120.707524, 28.027669, 27.988246],
+      *  // time: [min, max]
+      *  time: ["00:06:33", "00:12:56"]
+     */
+    const geoParams: GeoParams = {
+      MaxLng: ctx.request.body.geo[0],
+      MinLng: ctx.request.body.geo[1],
+      MaxLat: ctx.request.body.geo[2],
+      MinLat: ctx.request.body.geo[3]
     }
+
+    let minTime = ctx.request.body.time[0],
+        maxTime = ctx.request.body.time[1],
+        timeInterval = cube.config.timeSlice
     const timeParams: TimeParams = {
-      MinTime: 12,
-      MaxTime: 50
+      MinTime: timeToSliceIndex(minTime, timeInterval),
+      MaxTime:  timeToSliceIndex(maxTime, timeInterval),
     }
+
     query({ cube, geoParams, timeParams })
     // console.log('After Filter Cells Length:', cube.cellsInFilter.length)
     return cube.cellsInFilter

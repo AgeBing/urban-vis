@@ -43,7 +43,10 @@ async function loadCube(): Promise<Cube>{
   return cubeInstance
 }
 
-
+// "00:06:33" ->  6/interval
+function timeToSliceIndex(time: string, interval:number){
+  return Math.floor(Number(time.slice(3,5)) / interval )
+}
 function _filterInGeo(cube:Cube, params:GeoParams): CubeCell[]{
   return cube.cellsInFilter.filter((cell:CubeCell) => (
     (cell.lat <= params.MaxLat) && 
@@ -69,5 +72,6 @@ function query({ cube, geoParams, timeParams}){
 
 export {
   loadCube,
-  query
+  query,
+  timeToSliceIndex
 }

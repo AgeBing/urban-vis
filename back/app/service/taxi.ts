@@ -2,7 +2,7 @@ import { Service } from 'egg';
 import { TaxiTrajectory }  from '@type/taxi'
 const fileUtil = require('../utils/file')
 
-const PATH = '/Users/age/Desktop/code/urban-vis/data/data_in_use/taxi.json'
+const PATH = 'taxi.json'
 
 
 /**

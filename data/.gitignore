@@ -1,8 +1,7 @@
 .DS_Store
 
-
 data_in_use/
-data_in_bishe/
 STCubeData/
-scripts/phone.py
 __pycache__/
+.ipynb_checkpoints/
+node-server-data/

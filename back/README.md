@@ -1,33 +1,21 @@
-# hackernews-async-ts
-
-[Hacker News](https://news.ycombinator.com/) showcase using typescript && egg
-
-## QuickStart
-
-### Development
+## 开发
+参考 https://eggjs.org/zh-cn/intro/index.html
 
 ```bash
-$ npm i
-$ npm run dev
-$ open http://localhost:7001/
+npm install # 安装依赖
+npm run dev # 运行
 ```
+## 部署
+首先确保**依赖的数据**存在当前项目中
 
-Don't tsc compile at development mode, if you had run `tsc` then you need to `npm run clean` before `npm run dev`.
 
-### Deploy
 
-```bash
-$ npm run tsc
-$ npm start
-```
 
-### Npm Scripts
+## 数据流程
+#### 1. 原始数据预处理
+`data/scripts` 下的脚本，读取原始数据，经过处理后，一部分存储至 `data_in_use` 中， 另一部分存储至  `data/node-server` 下。
 
-- Use `npm run lint` to check code style
-- Use `npm test` to run unit test
-- se `npm run clean` to clean compiled js at development mode once
+因此若当前对应文件夹下不存在数据文件的话，需要手动执行脚本来生成文件。
 
-### Requirement
-
-- Node.js 8.x
-- Typescript 2.8+
+#### 2. Node.js 数据处理
+node 后端从 `data/node-server` 读取后通过对应接口转发
