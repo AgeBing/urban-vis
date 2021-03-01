@@ -46,10 +46,10 @@ class Controller extends Component {
     console.log(datas)
     const layers = []
     for (let i = 0; i < datas.length; i++) {
-      const { type, data } = datas[i];
+      const { type, data, attr } = datas[i];
       const func = LAYER_CONSTRUCTOR[type];
       if (func) {
-        layers.push(func(data));
+        layers.push(func(data, attr));
       }
     }
     this.setState({ layers });

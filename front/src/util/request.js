@@ -97,7 +97,20 @@ const api = {
   getBlocks(){
     const url = baseUrl + 'block'
     return httpGet(url)
-  }
+  },
+
+  caseTaxis(){
+    const url = baseUrl + 'case/taxi'
+    return httpGet(url)
+  },
+  caseWeibos(){
+    const url = baseUrl + 'case/weibo'
+    return httpGet(url)
+  },
+  caseTaxiPhone(){
+    const url = baseUrl + 'case/taxiPhone'
+    return httpGet(url)
+  },
 }
 
 export default api

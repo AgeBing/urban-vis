@@ -14,4 +14,11 @@ export default (app: Application) => {
 
   // 出租车数据
   router.post('/taxi', controller.taxi.query);
+
+
+
+  router.get('/case/taxi', controller.case.taxi);
+  router.get('/case/weibo', controller.case.weibo);
+  router.get('/case/taxiPhone', controller.case.taxiPhone);
+
 };
