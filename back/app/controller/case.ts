@@ -32,8 +32,8 @@ export default class TaxiController extends Controller {
     const filterInTime = (car) => {
       // const start = moment("2014-01-01 00:30:55")
       // const end = moment("2014-01-01 01:30:55")
-      const start = moment("2014-01-01 00:30:55")
-      const end = moment("2014-01-01 23:30:55")
+      const start = moment("2014-01-01 00:00:55")
+      const end = moment("2014-01-01 23:59:55")
       car.points = car.points.filter(p => {
         let m = moment(p['time'])
         return (m.isAfter(start) && m.isBefore(end))
@@ -55,16 +55,16 @@ export default class TaxiController extends Controller {
     let phone:Trajectory = await fileUtil.readJson('phone_460022584127733.json')
     
     // 分段的形式
-    let trajs: PhoneTrajectory[] = phone.segments.map((s,i) => ({
-      IMEI: phone['id'] + '-' + i,
-      points: s
-    }))
+    // let trajs: PhoneTrajectory[] = phone.segments.map((s,i) => ({
+    //   IMEI: phone['id'] + '-' + i,
+    //   points: s
+    // }))
 
       // 将分段连成一条线
-    // let trajs: PhoneTrajectory[] = [{
-    //   IMEI: phone['id'],
-    //   points: phone.segments.reduce((a,b)=> a.concat(b),[])
-    // }]
+    let trajs: PhoneTrajectory[] = [{
+      IMEI: phone['id'],
+      points: phone.segments.reduce((a,b)=> a.concat(b),[])
+    }]
 
     ctx.body = trajs
   }

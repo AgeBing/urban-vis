@@ -13,16 +13,6 @@ export default class STC extends Service{
     const { ctx } = this
     const cube: Cube = await loadCube()
     // console.log('Load Cube:', cube)
-    // const geoParams: GeoParams = { // https://lbs.qq.com/tool/getpoint/index.html
-    //   MaxLng: 120.707524,
-    //   MinLng: 120.623029,
-    //   MaxLat: 28.027669,
-    //   MinLat: 27.988246
-    // }
-    // const timeParams: TimeParams = {
-    //   MinTime: 12,
-    //   MaxTime: 50
-    // }
 
     /**
       *  // geo: [maxlng, minlng, maxlat, minlat]
@@ -30,19 +20,39 @@ export default class STC extends Service{
       *  // time: [min, max]
       *  time: ["00:06:33", "00:12:56"]
      */
-    const geoParams: GeoParams = {
-      MaxLng: ctx.request.body.geo[0],
-      MinLng: ctx.request.body.geo[1],
-      MaxLat: ctx.request.body.geo[2],
-      MinLat: ctx.request.body.geo[3]
-    }
+    const { geo, time } = ctx.request.body
+    let geoParams: GeoParams | null = null,
+        timeParams:TimeParams | null = null
+    if(!geo && !time){  // 为设置参数（调试）
+      geoParams = { // https://lbs.qq.com/tool/getpoint/index.html
+        MaxLng: 120.707524,
+        MinLng: 120.623029,
+        MaxLat: 28.027669,
+        MinLat: 27.988246
+      }
+      timeParams = {
+        MinTime: 12,
+        MaxTime: 50
+      }
+    }else{
 
-    let minTime = ctx.request.body.time[0],
-        maxTime = ctx.request.body.time[1],
-        timeInterval = cube.config.timeSlice
-    const timeParams: TimeParams = {
-      MinTime: timeToSliceIndex(minTime, timeInterval),
-      MaxTime:  timeToSliceIndex(maxTime, timeInterval),
+      if(Array.isArray(geo) && geo.length === 4)
+        geoParams= {
+          MaxLng: ctx.request.body.geo[0],
+          MinLng: ctx.request.body.geo[1],
+          MaxLat: ctx.request.body.geo[2],
+          MinLat: ctx.request.body.geo[3]
+        }
+
+      if(Array.isArray(time) && time.length === 2){
+        let minTime = ctx.request.body.time[0],
+            maxTime = ctx.request.body.time[1],
+            timeInterval = cube.config.timeSlice
+        timeParams= {
+          MinTime: timeToSliceIndex(minTime, timeInterval),
+          MaxTime:  timeToSliceIndex(maxTime, timeInterval),
+        }
+      }
     }
 
     query({ cube, geoParams, timeParams })

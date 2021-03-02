@@ -6,7 +6,7 @@ export default (app: Application) => {
   router.post('/test', controller.home.test);
   router.get('/test', controller.home.test);
 
-  router.get('/taxi', controller.taxi.index);
+  router.get('/taxi', controller.taxi.query);
   router.get('/phone', controller.phone.index);
   router.get('/weibo', controller.weibo.index);
 

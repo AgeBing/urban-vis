@@ -1,5 +1,8 @@
 import { Cube, CubeConfig, CubeCell, GeoParams, TimeParams } from '@type/cube'
+// import { BoolOperate } from '@type/base'
+import { BoolOperate } from '@type/base'
 const fileUtil = require('./file')
+const _ = require('lodash/array');
 
 const FILES_PATH = {
   CUBE_CONFIG: 'STCubeConfig.json',
@@ -47,16 +50,16 @@ async function loadCube(): Promise<Cube>{
 function timeToSliceIndex(time: string, interval:number){
   return Math.floor(Number(time.slice(3,5)) / interval )
 }
-function _filterInGeo(cube:Cube, params:GeoParams): CubeCell[]{
-  return cube.cellsInFilter.filter((cell:CubeCell) => (
+function _filterInGeo(cells:CubeCell[], config: CubeConfig, params:GeoParams): CubeCell[]{
+  return cells.filter((cell:CubeCell) => (
     (cell.lat <= params.MaxLat) && 
-    (cell.lat - cube.config.width >= params.MinLat) && 
+    (cell.lat - config.width >= params.MinLat) && 
     (cell.lng >= params.MinLng) && 
-    (cell.lng + cube.config.width <= params.MaxLng)
+    (cell.lng + config.width <= params.MaxLng)
   ))
 }
-function _filterInTime(cube:Cube, params:TimeParams): CubeCell[]{
-  return cube.cellsInFilter.filter((cell:CubeCell) => (
+function _filterInTime(cells:CubeCell[], params:TimeParams): CubeCell[]{
+  return cells.filter((cell:CubeCell) => (
     cell.time >= params.MinTime && cell.time <= params.MaxTime
   ))
 }
@@ -64,10 +67,30 @@ function _filterInTime(cube:Cube, params:TimeParams): CubeCell[]{
 /**
  * 输入时空条件，查询符合条件的时空单元
  */
-function query({ cube, geoParams, timeParams}){
-  cube.cellsInFilter = cube.cells
-  if(geoParams) cube.cellsInFilter = _filterInGeo(cube, geoParams)
-  if(timeParams) cube.cellsInFilter = _filterInTime(cube, timeParams)
+function query({ cube, geoParams, timeParams, boolOp = BoolOperate['Intersection'] }){
+  let filteredCells: CubeCell[] = []
+  let filteredCellsArr: CubeCell[][] = []
+  if(geoParams){
+    filteredCells = _filterInGeo(cube.cells, cube.config, geoParams)
+    filteredCellsArr.push( filteredCells )
+  }
+  if(timeParams){
+    filteredCells = _filterInTime(cube.cells, timeParams)
+    filteredCellsArr.push( filteredCells )
+  }
+  console.log("Bool Mode ", boolOp)
+  console.log("Befor Bool ", filteredCellsArr[0]?.length,  filteredCellsArr[1]?.length)
+  let boolResult = []
+  if(boolOp === BoolOperate['Union']){
+    // https://lodash.com/docs/4.17.15#union
+    // boolResult = _.unionBy( [...filteredCellsArr], 'id')  
+    boolResult = _.unionBy(filteredCellsArr[0], filteredCellsArr[1], 'id')  
+  }else{
+    // boolResult = _.intersectionBy( [...filteredCellsArr], 'id')
+    boolResult = _.intersectionBy(filteredCellsArr[0], filteredCellsArr[1], 'id')  
+  }
+  cube.cellsInFilter = boolResult
+  console.log("After Bool ", cube.cellsInFilter.length)
 }
 
 export {
