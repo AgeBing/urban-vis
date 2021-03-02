@@ -18,4 +18,7 @@ npm run dev # 运行
 因此若当前对应文件夹下不存在数据文件的话，需要手动执行脚本来生成文件。
 
 #### 2. Node.js 数据处理
-node 后端从 `data/node-server` 读取后通过对应接口转发
+node 后端从 `data/node-server-data` 读取数据文件后通过对应接口转发
+
+## 数据接口
+参考 api.md

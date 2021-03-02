@@ -10,15 +10,4 @@ api.getTest()
 api.postTest()
 ```
 ## 接口列表
-
-#### 1. 出租车数据请求
-请求格式
-```json
-payload: {
-  // geo: [maxlng, minlng, maxlat, minlat]
-  geo: [120.623029, 120.707524, 28.027669, 27.988246],
-  // time: [min, max]
-  time: ["00:06:33", "00:12:56"]
-}
-```
-输出格式
+参考 back\README.md

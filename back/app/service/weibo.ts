@@ -2,7 +2,7 @@ import { Service } from 'egg';
 import { WeiboItem }  from '@type/weibo'
 const fileUtil = require('../utils/file')
 
-const PATH = '/Users/age/Desktop/code/urban-vis/data/data_in_use/weibo.json'
+const PATH = 'weibo.json'
 
 /**
  * Weibo Service

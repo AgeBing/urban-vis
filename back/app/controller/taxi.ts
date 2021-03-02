@@ -14,6 +14,15 @@ export default class TaxiController extends Controller {
     this.logger.info('获取出租车轨迹数据...')
     this.logger.info('输入条件: ', ctx.request.body)    
 
+    // 设置默认条件
+    let { geo, time } = ctx.request.body
+    if(!geo || !time){
+      ctx.request.body= {
+        "geo": [120.707524, 120.623029, 28.027669, 27.988246],
+        "time": ["01:06:33", "03:12:56"]
+      }
+    }
+
     ctx.body = await this.stc();
   }
 
