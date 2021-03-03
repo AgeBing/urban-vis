@@ -11,6 +11,8 @@ export default (app: Application) => {
   router.post('/taxi', controller.taxi.query);
   router.get('/phone', controller.phone.index);
   router.get('/weibo', controller.weibo.index);
+  router.get('/poi', controller.poi.index);
+  router.post('/poi', controller.poi.query);
   router.get('/stc', controller.taxi.query);
 
   // 用于 Case 展示

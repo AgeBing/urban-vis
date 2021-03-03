@@ -22,3 +22,17 @@ node 后端从 `data/node-server-data` 读取数据文件后通过对应接口�
 
 ## 数据接口
 参考 api.md
+
+
+## 其他 
+- egg-mysel 插件支持 ts 版本
+  ```
+  // typings/index.d.ts
+  import 'egg';
+
+  declare module 'egg' {
+    interface Application {
+      mysql: any;
+    }
+  }
+  ```
