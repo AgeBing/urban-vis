@@ -5,19 +5,20 @@
     wget  host/taxi 
     ```
 - `post` 请求，请求格式
+    
     ```json
     {
-        "payload": {
-            // geo: [maxlng, minlng, maxlat, minlat]
-            "geo": [120.623029, 120.707524, 28.027669, 27.988246],
-            // time: [min, max]
-            "time": ["00:06:33", "00:12:56"],
-            // boolOp：时间和空间条件是布尔组合。
-            // 1 表示 Union并集，2 表示 Intersection交集。
-            "boolOp": 2 // 如果不传默认为2
-        }
+        "geo": [120.623029, 120.707524, 28.027669, 27.988246],
+        "time": ["00:06:33", "00:12:56"],
+        "boolOp": 2
     }
     ```
+    
+    - `geo` :  `[maxlng, minlng, maxlat, minlat]`
+    - `time` : `[min, max]`
+    - 默认情况下需要同时传 geo 和 time 数据，否则后台会自动添加测试的条件
+    - `boolOp` : 时间和空间条件是布尔组合。1 表示 Union并集，2 表示 Intersection交集，不传默认为2
+
 
 - 输出格式: 参考 `type\taxi.ts`
     ```json
@@ -56,7 +57,7 @@ todo
 ## 3. 微博数据
 - `get` 请求: 获取所有微博数据
     ```bash
-        wget  host/weibo 
+    wget  host/weibo 
     ```
 - 输出格式: 参考 `type\weibo.ts`
     ```json
