@@ -19,7 +19,8 @@ export default class TaxiController extends Controller {
     if(!geo || !time){
       ctx.request.body= {
         "geo": [120.707524, 120.623029, 28.027669, 27.988246],
-        "time": ["01:06:33", "03:12:56"]
+        "time": ["01:06:33", "03:12:56"],
+        // "boolOp": 1
       }
     }
 

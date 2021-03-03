@@ -1,5 +1,4 @@
 import { Cube, CubeConfig, CubeCell, GeoParams, TimeParams } from '@type/cube'
-// import { BoolOperate } from '@type/base'
 import { BoolOperate } from '@type/base'
 const fileUtil = require('./file')
 const _ = require('lodash/array');

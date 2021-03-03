@@ -1,6 +1,6 @@
 import { Service } from 'egg';
 import { Cube, CubeCell, GeoParams, TimeParams } from '@type/cube'
-import { Trajectory, Point } from '@type/base'
+import { Trajectory, Point, BoolOperate } from '@type/base'
 import { query, loadCube, timeToSliceIndex } from '../utils/stc'
 const fileUtil = require('../utils/file')
 
@@ -20,7 +20,7 @@ export default class STC extends Service{
       *  // time: [min, max]
       *  time: ["00:06:33", "00:12:56"]
      */
-    const { geo, time } = ctx.request.body
+    const { geo, time, boolOp = BoolOperate['Intersection'] } = ctx.request.body
     let geoParams: GeoParams | null = null,
         timeParams:TimeParams | null = null
     if(!geo && !time){  // 为设置参数（调试）
@@ -35,7 +35,6 @@ export default class STC extends Service{
         MaxTime: 50
       }
     }else{
-
       if(Array.isArray(geo) && geo.length === 4)
         geoParams= {
           MaxLng: ctx.request.body.geo[0],
@@ -55,7 +54,7 @@ export default class STC extends Service{
       }
     }
 
-    query({ cube, geoParams, timeParams })
+    query({ cube, geoParams, timeParams, boolOp })
     // console.log('After Filter Cells Length:', cube.cellsInFilter.length)
     return cube.cellsInFilter
   }
