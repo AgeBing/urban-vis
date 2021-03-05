@@ -5,7 +5,7 @@ const _ = require('lodash/array');
 
 const FILES_PATH = {
   CUBE_CONFIG: 'STCubeConfig.json',
-  CUBE_CELLS: 'STCCube.json'
+  CUBE_CELLS: 'STCube.json'
 }
 
 async function _loadSTCConfig(): Promise<CubeConfig>{

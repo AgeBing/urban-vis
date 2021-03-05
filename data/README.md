@@ -15,11 +15,80 @@
 并且针对上述几个数据源，建立索引结构，结果输出至 `node-server-data`
 
 数据列表描述：
-- `STCCube.json`  STC 中 cube 列表
-- `STCubeConfig.json`  STC 配置信息
-- `taxi.json`  出租车详细数据，按照 STC id 进行索引
+- `STCubeConfig.json` STC 配置信息
+- `STCube.json` STC 中 cube 列表
+  ```json
+  [
+    {
+        "id": 0,
+        "lat": 27.958246,
+        "lng": 120.593029,
+        "time": 0
+    },
+    {
+        "id": 1,
+        "lat": 27.958246,
+        "lng": 120.6084785,
+        "time": 0
+    }
+  ]
+  ```
+- `taxiSDATA.json`  出租车 id 到 其虽经过的 cube id 的索引
+  ```json
+  {
+    "浙C02668.LOG": {
+        "stcubes": [
+            30,
+            130,
+            180,
+        ],
+        "bbx": {
+          "timeRange": {
+              "min": "2014-01-01 00:00:31",
+              "max": "2014-01-01 23:59:47"
+          },
+          "areaRange": {
+              "minLat": 0,
+              "maxLat": 28.0275993347,
+              "minLng": 0,
+              "maxLng": 120.7459487915
+          }
+        }
+    }
+  }
+  ```
+- `taxiSTCube.json`  出租车详细数据，按照 STC id 进行索引。格式示例如下
+  ```json
+  {
+      "160": {
+          "浙C02668.LOG": {
+              "0": [
+                  {
+                      "longitude": 120.5985031128,
+                      "latitude": 28.0261802673,
+                      "time": "2014-01-01 00:00:31"
+                  },
+                  {
+                      "longitude": 120.597618103,
+                      "latitude": 28.0260505676,
+                      "time": "2014-01-01 00:01:01"
+                  }
+              ]
+          },
+          "浙C04348.LOG": {
+              "3": [
+                  {
+                      "longitude": 120.5999221802,
+                      "latitude": 28.0210990906,
+                      "time": "2014-01-01 00:02:33"
+                  }
+              ]
+          }
+      }
+  }
+  ```
 - `weibo.json` 微博详细数据列表
-
+  
 #### 3. 数据查询服务器
 在 `/back` 中搭建了 Node 服务器，读取 `node-server-data` 中的数据，向外开放 http 接口，并返回搜索结果。
 具体接口查看 `/back/api.md`
@@ -31,3 +100,6 @@
   ```bash
   jupyter nbconvert --to python phone_pre.ipynb
   ```
+
+
+

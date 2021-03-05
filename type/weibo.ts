@@ -1,5 +1,6 @@
 
 export interface WeiboItem {
+  id: string,
   time: string;
   name: string;
   content: string;
