@@ -2,10 +2,12 @@ import { Controller } from 'egg';
 import * as moment from 'moment';
 import { Trajectory } from '@type/base'
 import { PhoneTrajectory } from '@type/phone'
-
-
 const fileUtil = require('../utils/file')
 
+
+/**
+ * 用于 VAUD CASE
+ */
 export default class TaxiController extends Controller {
   public async index() {
     const { ctx } = this;
