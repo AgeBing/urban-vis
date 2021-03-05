@@ -13,7 +13,7 @@ export default class WeiboController extends Controller {
   public async query() {
     const { ctx } = this;
     this.logger.info('查询微博数据...')
-    let { geo, time } = ctx.request.body
+    let { geo, time, keyword } = ctx.request.body
     let param: SpaceTimeParam | null = null
     if(geo || time){
       param = {
@@ -24,7 +24,7 @@ export default class WeiboController extends Controller {
     //   "geo": [120.707524, 120.623029, 28.027669, 27.988246],
     //     "time": ["01:06:33", "03:12:56"],
     // }
-    let res:WeiboItem[] = await ctx.service.weibo.query(param);
+    let res:WeiboItem[] = await ctx.service.weibo.query(param, keyword);
     ctx.body = res
   }
 }

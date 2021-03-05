@@ -11,9 +11,13 @@ export default (app: Application) => {
   router.post('/taxi', controller.taxi.query);
   router.get('/phone', controller.phone.index);
   router.get('/weibo', controller.weibo.index);
+  router.post('/weibo', controller.weibo.query);
   router.get('/poi', controller.poi.index);
   router.post('/poi', controller.poi.query);
   router.get('/stc', controller.taxi.query);
+
+  // Python 后端的接口
+  router.get('/py/query', controller.home.index);
 
   // 用于 Case 展示
   router.get('/case/taxi', controller.case.taxi);

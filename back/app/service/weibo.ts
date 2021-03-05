@@ -21,21 +21,32 @@ export default class Weibo extends Service {
   /**
    * 按条件查询
    */
-  public async query(param: SpaceTimeParam | null) : Promise<WeiboItem []>{
+  public async query(param: SpaceTimeParam | null, keyword: string| null) : Promise<WeiboItem []>{
     const list: WeiboItem[] = await this.list()
-    if(!param) return list
-    return list.filter((weibo: WeiboItem) => {
-      let bool = true
-      let point:Point = {
-        latitude: weibo.lat,
-        longitude: weibo.lng,
-        time: weibo.time
-      }
+    if(!param && !keyword) return list
 
-      if(param.geo) bool = bool && isPointWithinRect(point, param.geo)
-      if(param.time) bool = bool && isPointWithinInterval(point, param.time)
+    let filterList: WeiboItem[] = list
+    if(param){
+      filterList= filterList.filter((weibo: WeiboItem) => {
+        let bool = true
+        let point:Point = {
+          latitude: weibo.lat,
+          longitude: weibo.lng,
+          time: weibo.time
+        }
 
-      return bool
-    })
+        if(param.geo) bool = bool && isPointWithinRect(point, param.geo)
+        if(param.time) bool = bool && isPointWithinInterval(point, param.time)
+
+        return bool
+      })
+    }
+    if(keyword){
+      filterList = filterList.filter((weibo:WeiboItem)=>{
+        const { name, content } = weibo
+        return (content.indexOf(keyword) != -1 ||  name.indexOf(keyword) != -1)
+      })
+    }
+    return filterList
   }
 }
