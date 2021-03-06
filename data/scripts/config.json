@@ -1,0 +1,13 @@
+{
+    "splitLngNum": 10,
+    "splitLatNum": 5,
+    "splitInterval": 10,
+    "splitTimeNum": 144,
+    "gridWidth": 0.015449499999999717,
+    "area": {
+        "minLat": 27.958246,
+        "maxLat": 28.027669,
+        "minLng": 120.593029,
+        "maxLng": 120.747524
+    }
+}
