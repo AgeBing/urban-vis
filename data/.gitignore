@@ -5,3 +5,4 @@ STCubeData/
 __pycache__/
 .ipynb_checkpoints/
 node-server-data/
+scripts/DP/

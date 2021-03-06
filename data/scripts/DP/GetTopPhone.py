@@ -11,7 +11,7 @@ from os import walk
 def writeFile(data,filename):
     with open(filename, 'w') as outfile:
         json.dump(data, outfile)
-def getTrajPoints(trajsIDs,trajs,filename):
+def getTrajPoints(trajsIDs,filename):
     trajs = []
     BASE_PATH = FILES_DIR["phone_dir"]
     with open(BASE_PATH+filename) as f:
@@ -49,23 +49,30 @@ def getIDs():
         f = BASE_PATH + filename
         getTrajID(f,IDs)
     return [files,IDs]
-inf = getIDs()
-files = inf[0]
-trajsIDs = inf[1]
-res = []
+# inf = getIDs()
+# files = inf[0]
+# trajsIDs = inf[1]
+# res = []
 K = 10000
-writeFilename="./phoneID.json"
-for i in range(K):
-	key = max(trajsIDs,key=trajsIDs.get)
-	trajsIDs.pop(key)
-	res.append(key)
-# 筛选出的长度较长的轨迹id集合
-print(res)
-writeFile(res, writeFilename)
+# writeFilename="./phoneID.json"
+# for i in range(K):
+# 	key = max(trajsIDs,key=trajsIDs.get)
+# 	trajsIDs.pop(key)
+# 	res.append(key)
+# # 筛选出的长度较长的轨迹id集合
+# print(res)
+# writeFile(res, writeFilename)
 
-for filename in files:
-    trajs = getTrajPoints(trajsIDs,trajs,filename)
-    writeFile(trajs, "./TOP"+K+filename)
+with open("./topK.json") as f:
+    trajsIDs = json.load(f)
+    files = list_files()
+    ll = ['mpt2014114 1140310sortbyid.txt','mpt2014114 1140050sortbyid.txt']
+    for filename in files:
+        print(filename)
+        if filename in ll:
+            trajs = getTrajPoints(trajsIDs,filename)
+            print("写入完成","./phoneData/TOP"+str(K)+filename)
+            writeFile(trajs, "./phoneData/TOP"+str(K)+filename)
 
 
 
