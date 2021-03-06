@@ -6,3 +6,6 @@ __pycache__/
 .ipynb_checkpoints/
 node-server-data/
 scripts/DP/
+data_in_bishe/
+originPhoneData/
+scripts/.ipynb_checkpoints/

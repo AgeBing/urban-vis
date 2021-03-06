@@ -17,7 +17,9 @@ export default (app: Application) => {
   router.get('/stc', controller.taxi.query);
 
   // Python 后端的接口
-  router.get('/py/query', controller.home.index);
+  router.post('/py/query', controller.py.query);
+  router.post('/py/queryId', controller.py.getOneData);
+  router.post('/py/box`', controller.py.isOneDataInBBox);
 
   // 用于 Case 展示
   router.get('/case/taxi', controller.case.taxi);

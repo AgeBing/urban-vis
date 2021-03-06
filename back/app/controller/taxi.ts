@@ -3,16 +3,10 @@ import { Trajectory } from '@type/base'
 import { TaxiTrajectory } from '@type/taxi'
 
 export default class TaxiController extends Controller {
-  public async index() {
-    const { ctx } = this;
-    let res = await ctx.service.taxi.list();
-    ctx.body = res
-  }
-
   public async query(){
     const { ctx }  = this; 
     this.logger.info('获取出租车轨迹数据...')
-    this.logger.info('输入条件: ', ctx.request.body)    
+    this.logger.info('输入条件: ', ctx.request.body)     
 
     // 设置默认条件
     let { geo, time } = ctx.request.body
@@ -31,12 +25,12 @@ export default class TaxiController extends Controller {
     const { ctx } = this;
 
     console.time('时空立方体范围查询时间: ')
-    let cells = await ctx.service.stc.queryCells();
-    console.log('时空立方体数量:', cells.length)
-    let stcTrajs: Trajectory[] = await ctx.service.stc.trajectoryInCells(cells);
+    let cells = await ctx.service.taxi.queryCells();
     console.timeEnd('时空立方体范围查询时间: ')
+    console.log('时空立方体数量:', cells.length)
 
     console.time('范围内轨迹获取时间: ')
+    let stcTrajs: Trajectory[] = await ctx.service.taxi.trajectoryInCells(cells.map(c => c.id.toString()));
     let taxiTrajs: TaxiTrajectory[] = []
     stcTrajs.map(t => {
       t.segments.map((s, i) => {

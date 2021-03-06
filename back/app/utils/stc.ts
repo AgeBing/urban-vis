@@ -1,11 +1,15 @@
 import { Cube, CubeConfig, CubeCell, GeoParams, TimeParams } from '@type/cube'
+// import { Point } from '@type/base'
 import { BoolOperate } from '@type/base'
+// import { isPointWithinRect, isPointWithinInterval } from './math'
+import * as moment from 'moment';
+
 const fileUtil = require('./file')
 const _ = require('lodash/array');
 
 const FILES_PATH = {
   CUBE_CONFIG: 'STCubeConfig.json',
-  CUBE_CELLS: 'STCCube.json'
+  CUBE_CELLS: 'STCube.json'
 }
 
 async function _loadSTCConfig(): Promise<CubeConfig>{
@@ -47,8 +51,32 @@ async function loadCube(): Promise<Cube>{
 
 // "00:06:33" ->  6/interval
 function timeToSliceIndex(time: string, interval:number){
-  return Math.floor(Number(time.slice(3,5)) / interval )
+  const a = moment(time, "HH:mm:ss");
+  const m = a.hour() * 60 + a.minute();
+  return Math.floor(Number(m) / interval )
 }
+
+// 找到点对应的 cube id
+// async function getCubeCellIndexOfPoint(point: Point) {
+//   const cube = await loadCube()
+//   const cells = cube.cells  
+
+//   cells.find((cell) => {
+//     isPointWithinRect(point, 
+//       [
+//         cell.lng + cube.config.width,
+//         cell.lng,
+//         cell.lat + cube.config.width,
+//         cell.lat
+//       ]
+//     )
+//     // &&
+//     // isPointWithinInterval(point,
+//       // [cell.time, cell.time ]
+//     // )
+//   })
+// }
+
 function _filterInGeo(cells:CubeCell[], config: CubeConfig, params:GeoParams): CubeCell[]{
   return cells.filter((cell:CubeCell) => (
     (cell.lat <= params.MaxLat) && 
@@ -91,6 +119,8 @@ function query({ cube, geoParams, timeParams, boolOp = BoolOperate['Intersection
   cube.cellsInFilter = boolResult
   console.log("After Bool ", cube.cellsInFilter.length)
 }
+
+
 
 export {
   loadCube,
