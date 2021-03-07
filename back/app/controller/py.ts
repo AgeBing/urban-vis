@@ -56,6 +56,7 @@ export default class PyController extends Controller {
 
   public async getOneData() {
     const { ctx } = this;
+    const self = this
     this.logger.info('获取单条特定数据...')
     let { source, id } = ctx.request.body
 
@@ -64,7 +65,7 @@ export default class PyController extends Controller {
         [DS.taxiTraj] : this.service.taxi.getOneTaxi.bind(id)
       },
       source,
-      this
+      self
     )
   }
 

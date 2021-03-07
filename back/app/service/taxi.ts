@@ -30,7 +30,7 @@ export default class Taxi extends Service {
    */
   public async queryCells(): Promise<CubeCell[]>{
     const { ctx } = this
-    console.time('时空立方体范围查询时间: ')
+    console.time('时空立方体查询时间: ')
     const cube: Cube = await loadCube()
 
     /**
@@ -63,7 +63,7 @@ export default class Taxi extends Service {
     }
 
     query({ cube, geoParams, timeParams, boolOp })
-    console.timeEnd('时空立方体范围查询时间: ')
+    console.timeEnd('时空立方体查询时间: ')
     return cube.cellsInFilter
   }
 
@@ -165,7 +165,8 @@ export default class Taxi extends Service {
   /**
    * Python 端查询
    */
-  public async pyQuery(){
+  public pyQuery = async() => {
+
     const { ctx }  = this; 
     this.logger.info('py 查询出租车数据...')
     this.logger.info('输入条件: ', ctx.request.body)
