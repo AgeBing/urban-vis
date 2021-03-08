@@ -1,6 +1,6 @@
 import { Controller } from 'egg';
-import { Trajectory } from '@type/base'
-import { TaxiTrajectory } from '@type/taxi'
+import { DS as DataSource, Traj } from '@type/base'
+import { STCData, STCDataItem } from '@type/cube'
 
 export default class TaxiController extends Controller {
   public async query(){
@@ -9,45 +9,26 @@ export default class TaxiController extends Controller {
     this.logger.info('输入条件: ', ctx.request.body)     
 
     // 设置默认条件
-    let { geo, time } = ctx.request.body
-    if(!geo || !time){
-      ctx.request.body= {
-        "geo": [120.707524, 120.623029, 28.027669, 27.988246],
-        "time": ["01:06:33", "03:12:56"],
-        // "boolOp": 1
-      }
-    }
+    // let { geo, time } = ctx.request.body
+    // if(!geo || !time){
+    //   ctx.request.body= {
+    //     "geo": [120.907524, 120.023029, 28.527669, 27.688246],
+    //     "time": ["06:06:33", "08:12:56"],
+    //     // "boolOp": 1
+    //   }
+    // }
 
-    ctx.body = await this.stc();
-  }
+    let cells = await ctx.service.stc.queryCellsInRange();
+    const cellsId = cells.map(c => c.id.toString())
+    let stcDatas: STCData =  await ctx.service.stc.getDatasInCells(cellsId, DataSource['TaxiTraj'])
+    
+    let taxiTrajs: Traj[] = []
+    taxiTrajs = stcDatas.map((d: STCDataItem) => ({
+      'id': d['id'],
+      'points': d['data']
+    }))
 
-  public async stc(){
-    const { ctx } = this;
-
-    console.time('时空立方体范围查询时间: ')
-    let cells = await ctx.service.taxi.queryCells();
-    console.timeEnd('时空立方体范围查询时间: ')
-    console.log('时空立方体数量:', cells.length)
-
-    console.time('范围内轨迹获取时间: ')
-    let stcTrajs: Trajectory[] = await ctx.service.taxi.trajectoryInCells(cells.map(c => c.id.toString()));
-    let taxiTrajs: TaxiTrajectory[] = []
-    stcTrajs.map(t => {
-      t.segments.map((s, i) => {
-        taxiTrajs.push({
-          carNo: t.id + '-' + i,
-          points: s
-        })
-      })
-    })
-    console.log('车辆数量: ',stcTrajs.length,'  轨迹数量: ', taxiTrajs.length)
-    console.timeEnd('范围内轨迹获取时间: ')
-    // stcTrajs.map(t => {
-    //   taxiTrajs.push({
-    //       carNo: t.id,
-    //       points: t.segments.reduce((a,b)=> a.concat(b),[])
-    //   })
-    // })
-    return taxiTrajs
+    this.logger.info('taxi 轨迹数量: ', taxiTrajs.length)
+    ctx.body = taxiTrajs
   }
 }

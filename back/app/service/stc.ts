@@ -60,7 +60,7 @@ export default class STC extends Service{
       *  // time: [min, max]
       *  time: ["00:06:33", "00:12:56"]
      */
-    const { geo, time, boolOp = BoolOperate['Intersection'] } = ctx.request.body
+    const { geo, time, boolOp = BoolOperate['Union'] } = ctx.request.body
     let geoParams: GeoParams | null = null,
         timeParams:TimeParams | null = null
 

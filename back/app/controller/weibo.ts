@@ -25,6 +25,7 @@ export default class WeiboController extends Controller {
     //     "time": ["01:06:33", "03:12:56"],
     // }
     let res:WeiboItem[] = await ctx.service.weibo.query(param, keyword);
+    console.log(res.length)
     ctx.body = res
   }
 }

@@ -148,8 +148,7 @@ function query({ cube, geoParams, timeParams, boolOp = BoolOperate['Intersection
   cube.cellsInFilter = boolResult
   console.log("After Bool ", cube.cellsInFilter.length)
 }
-
-
+   
 export {
   loadCube,
   query,
