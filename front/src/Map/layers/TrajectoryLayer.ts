@@ -4,12 +4,14 @@ import { PhonePoint, PhoneTrajectory } from '@type/phone'
 import { LayerAttr } from '@type/layer'
 
 export const  createTrajectoryLayer = ( data: TaxiTrajectory[] |  PhoneTrajectory[], attr: LayerAttr) => {
-    let { color } = attr || {
+  let { color, strokeWidth } = attr || {
       color : [128,163,151, 20],
+      strokeWidth: 6
     }
-  console.log(color)
+  const id = Math.random()
+  // console.log(color)
 	return new PathLayer({
-    id: 'path-layer',
+    id: `path-layer-${id}`,
     data,
     pickable: true,
     widthMinPixels: 2,
@@ -20,6 +22,6 @@ export const  createTrajectoryLayer = ( data: TaxiTrajectory[] |  PhoneTrajector
     // getColor: (d:any) => [128,163,151, 20],
     getColor: (d:any) => color,
     // getWidth: (d:any) => 1,
-    getWidth: (d:any) => 6,
+    getWidth: (d:any) => strokeWidth,
 	});
 }

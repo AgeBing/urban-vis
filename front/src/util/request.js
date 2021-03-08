@@ -98,13 +98,16 @@ const api = {
     const url = baseUrl + 'block'
     return httpGet(url)
   },
-
   caseTaxis(){
     const url = baseUrl + 'case/taxi'
     return httpGet(url)
   },
   caseWeibos(){
     const url = baseUrl + 'case/weibo'
+    return httpGet(url)
+  },
+  casePois(){
+    const url = baseUrl + 'case/poi'
     return httpGet(url)
   },
   caseTaxiPhone(){

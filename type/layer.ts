@@ -6,5 +6,6 @@ export interface LayerData {
 }
 
 export interface LayerAttr {
-  color?: number[]
+  color?: number[],
+  strokeWidth?: number
 }

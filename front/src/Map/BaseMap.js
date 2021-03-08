@@ -6,13 +6,14 @@ import React, { Component } from "react";
 export default class BaseMap extends Component {
   render() {
     const { layers = [], cursor = "grab" } = this.props;
-    console.log("BaseMap Layers: ", layers);
+    // console.log("BaseMap Layers: ", layers);
     return (
       <DeckGL
         controller
         layers={layers}
         initialViewState={MAP_INITIAL_VIEW_STATE}
         getCursor={() => cursor}
+        // getTooltip={({object}) => object && `${object.name}\n${object.content}`}
       >
         <MapGL
           reuseMaps

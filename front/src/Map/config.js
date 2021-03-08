@@ -1,4 +1,4 @@
-// import { createPOILayer } from "./POILayer";
+import { createPOILayer } from "./layers/POILayer";
 import { createWeiboLayer } from "./layers/WeiboLayer";
 import { createTrajectoryLayer } from "./layers/TrajectoryLayer";
 // import { createAreaSelectLayer } from './AreaSelectLayer'
@@ -20,7 +20,7 @@ export const MAP_INITIAL_VIEW_STATE = {
     // latitude: 24.493397, longitude: 118.136673,  // 厦门
   	zoom: 12,
   	maxZoom: 18,
-  	pitch: 30,
+  	// pitch: 30,
   	bearing: 0
 };
 
@@ -41,7 +41,7 @@ export const LAYER_TYPES = {
   SELECT_LAYER: "SELECT_LAYER",
 }
 export const LAYER_CONSTRUCTOR = {
-  // POI_LAYER: createPOILayer,
+  POI_LAYER: createPOILayer,
   WEIBO_LAYER: createWeiboLayer,
   TRAJ_LAYER: createTrajectoryLayer,
   // ROAD_LAYER: createRoadLayer,

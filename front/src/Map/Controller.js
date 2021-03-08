@@ -43,7 +43,7 @@ class Controller extends Component {
    * @param {Array} datas 
    */
   layersFactory = (datas) => {
-    console.log(datas)
+    console.log("图层数据: ",datas)
     const layers = []
     for (let i = 0; i < datas.length; i++) {
       const { type, data, attr } = datas[i];
@@ -52,6 +52,7 @@ class Controller extends Component {
         layers.push(func(data, attr));
       }
     }
+    // console.log("生成图层: ",layers)
     this.setState({ layers });
   }
   /**
