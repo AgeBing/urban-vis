@@ -1,7 +1,9 @@
 import { Controller } from 'egg';
 import * as moment from 'moment';
-import { Trajectory } from '@type/base'
+import { Point, Trajectory } from '@type/base'
 import { PhoneTrajectory } from '@type/phone'
+import { WeiboItem } from '@type/weibo'
+import { POIItem } from '@type/poi'
 const fileUtil = require('../utils/file')
 
 
@@ -24,16 +26,46 @@ export default class TaxiController extends Controller {
     console.log(weibos)
     ctx.body = weibos
   }
+  public async weiboAll(){
+    const { ctx }  = this; 
+    this.logger.info('获取手机丢失的微博数据...')
+    let weibos:WeiboItem[] = await fileUtil.readJson('weibo.json')
+    ctx.body = weibos.slice(0, Math.floor(Math.random()* 300))
+  }
+
+
+  public async poi(){
+    const { ctx }  = this; 
+    this.logger.info('获取POI数据...')
+    let pois:POIItem[] = [
+      {
+        id: '1',
+        name: '百花苑',
+        type: '',
+        longitude: 120.64501953125,
+        latitude: 28.007713317871094
+      },
+      {
+        id: '2',
+        name: '松台广场',
+        type: '',
+        longitude: 120.65054321289062,
+        latitude: 28.01406478881836
+      }
+    ]
+    ctx.body = pois
+  }
+
 
   public async taxi(){
     const { ctx }  = this; 
-    this.logger.info('获取两辆出租车数据...')
+    this.logger.info('获取出租车数据...')
     let car1 = await fileUtil.readJson('taxi_浙CT0230.LOG.json')
     // let car2 = await fileUtil.readJson('taxi_浙CT1168.LOG.json')
 
     const filterInTime = (car) => {
       // const start = moment("2014-01-01 00:30:55")
-      // const end = moment("2014-01-01 01:30:55")
+      // const end = moment("2014-01-01 02:30:55")
       const start = moment("2014-01-01 00:00:55")
       const end = moment("2014-01-01 23:59:55")
       car.points = car.points.filter(p => {
@@ -61,13 +93,27 @@ export default class TaxiController extends Controller {
     //   IMEI: phone['id'] + '-' + i,
     //   points: s
     // }))
+    let points:Point[] = phone.segments.reduce((a,b)=> a.concat(b),[])
 
+    // console.log(bezierPoints)
       // 将分段连成一条线
     let trajs: PhoneTrajectory[] = [{
       IMEI: phone['id'],
-      points: phone.segments.reduce((a,b)=> a.concat(b),[])
+      points: points
     }]
-
     ctx.body = trajs
   }
 }
+
+// const smoothPoints = (points: Point[]) => {
+//   let bezierPoints:Point[] = []
+//   for(let i = 1; i < points.length - 1;i++){
+//     let p1 = points[i - 1],
+//         p2 = points[i]
+//         // n = 2
+//     let a = [p1['longitude'], p1['latitude']]
+//     let b = [p2['longitude'], p2['latitude']]
+//     let c = [ (a[0] + b[0] )/2, (a[1] + b[1] )/2]
+//   }
+//   return bezierPoints
+// }

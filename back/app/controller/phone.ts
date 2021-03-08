@@ -15,7 +15,7 @@ export default class PhoneController extends Controller {
 
     // 设置默认条件
     let { geo, time } = ctx.request.body
-    if(!geo || !time){
+    if(!geo && !time){
       ctx.request.body= {
         "geo": [120.907524, 120.023029, 28.527669, 27.688246],
         "time": ["06:06:33", "10:12:56"],

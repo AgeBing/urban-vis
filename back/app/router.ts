@@ -11,7 +11,7 @@ export default (app: Application) => {
   router.post('/taxi', controller.taxi.query);
   router.get('/phone', controller.phone.query);
   router.post('/phone', controller.phone.query);
-  router.get('/weibo', controller.weibo.index);
+  // router.get('/weibo', controller.weibo.index);
   router.post('/weibo', controller.weibo.query);
   router.get('/poi', controller.poi.index);
   router.post('/poi', controller.poi.query);
@@ -23,9 +23,9 @@ export default (app: Application) => {
   // router.post('/py/box`', controller.py.isOneDataInBBox);
 
   // 用于 Case 展示
-  router.get('/case/taxi', controller.case.taxi);
+  // router.get('/case/taxi', controller.case.taxi);
   // router.get('/case/weibo', controller.case.weibo);
-  router.get('/case/weibo', controller.case.weiboAll);
-router.get('/case/poi', controller.case.poi);
-  router.get('/case/taxiPhone', controller.case.taxiPhone);
+  // router.get('/case/weibo', controller.case.weiboAll);
+  // router.get('/case/poi', controller.case.poi);
+  // router.get('/case/taxiPhone', controller.case.taxiPhone);
 };
