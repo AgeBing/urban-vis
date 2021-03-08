@@ -1,3 +1,5 @@
+import { Point } from "./base";
+
 /**
  * 时空立方体
  */
@@ -50,7 +52,16 @@ export interface GeoParams{
   MinLng: number,
   MinLat: number,
 }
+
 export interface TimeParams{
   MinTime: number,
   MaxTime: number
 }
+
+
+export interface STCDataItem{
+  id: string,
+  data: Point[]
+}
+
+export type STCData = STCDataItem[]

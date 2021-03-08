@@ -1,16 +1,16 @@
 import { Controller } from 'egg';
-
+import { DS } from '@type/base'
 /**
  * 字段格式定义
  */
 export interface queryResItem{
   id: string,  // 数据项 id
-  stcubes: string[], // 该条数据轨迹传过的 cube cell id
-  bbx: Bbx  // 包围盒
+  stcubes?: string[], // 该条数据轨迹传过的 cube cell id
+  bbx?: Bbx  // 包围盒
 }
 export interface Bbx{
-  timeRange: BbxTimeRange,
-  areaRange: BbxAreaRange
+  timeRange: string[],
+  areaRange: number[]
 }
 export interface BbxTimeRange{
   min: string,
@@ -24,13 +24,11 @@ export interface BbxAreaRange{
 }
 export type queryRes = queryResItem[]
 
-// 数据源类型 DataSource
-export enum DS{  
-  mobileTraj = "mobileTraj",
-  taxiTraj = "taxiTraj",
-  weibo = "weibo",
-  poi = "poi"
-}
+
+const staxi = Symbol();
+const sphone = Symbol();
+const spoi = Symbol();
+const sweibo = Symbol();
 
 
 
@@ -43,11 +41,13 @@ export default class PyController extends Controller {
     let { source } = ctx.request.body
     this.logger.info('Python 端数据查询...')
 
-    source = DS.taxiTraj
+    // source = DS['TaxiTraj']
+    console.log("source", source)
 
     ctx.body = await Funcfactory(
       {
-        [DS.taxiTraj] : this.service.taxi.pyQuery
+        [staxi] : this.service.py.pyQuery.bind(this,source),
+        [sphone] : this.service.py.pyQuery.bind(this,source)
       },
       source,
       this
@@ -58,11 +58,11 @@ export default class PyController extends Controller {
     const { ctx } = this;
     const self = this
     this.logger.info('获取单条特定数据...')
-    let { source, id } = ctx.request.body
+    let { source } = ctx.request.body
 
     ctx.body = await Funcfactory(
       {
-        [DS.taxiTraj] : this.service.taxi.getOneTaxi.bind(id)
+        // [staxi] : this.service.taxi.getOneTaxi.bind(id)
       },
       source,
       self
@@ -72,11 +72,11 @@ export default class PyController extends Controller {
   public async isOneDataInBBox() {
     const { ctx } = this;
     this.logger.info('获取数据是否在范围内...')
-    let { source, id, bbox } = ctx.request.body
+    let { source } = ctx.request.body
     
     ctx.body = await Funcfactory(
       {
-        [DS.taxiTraj] : this.service.taxi.isOneTaxiInBbox.bind(id, bbox)
+        // [staxi] : this.service.taxi.isOneTaxiInBbox.bind(id, bbox)
       },
       source,
       this
@@ -89,26 +89,26 @@ export default class PyController extends Controller {
  * 少写点 switch 语句
  */
 interface Factory {
-  [DS.mobileTraj]?: Function,
-  [DS.taxiTraj]?: Function,
-  [DS.poi]?: Function,
-  [DS.weibo]?: Function
+  [staxi]?: Function,
+  [sphone]?: Function,
+  [spoi]?: Function,
+  [sweibo]?: Function
 }
 const Funcfactory = async (config:Factory, source: DS, self) => {
   // let { source: s } = self.ctx.request.body
   let res
   switch(source){
-    case DS['taxiTraj']:
-      res = await config['taxiTraj']?.call(self)
+    case DS['TaxiTraj']:
+      res = await config[staxi]?.call(self)
       break
-    case DS['mobileTraj']:
-      res = await config['mobileTraj']?.call(self)
+    case DS['MobileTraj']:
+      res = await config[sphone]?.call(self)
       break
-    case DS['poi']:
-      res = await config['poi']?.call(self)
+    case DS['Poi']:
+      res = await config[spoi]?.call(self)
       break
-    case DS['weibo']:
-      res = await config['weibo']?.call(self)
+    case DS['Weibo']:
+      res = await config[sweibo]?.call(self)
       break
     default:
       throw Error('找不到方法')

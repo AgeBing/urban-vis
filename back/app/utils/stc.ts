@@ -1,7 +1,7 @@
 import { Cube, CubeConfig, CubeCell, GeoParams, TimeParams } from '@type/cube'
-// import { Point } from '@type/base'
 import { BoolOperate } from '@type/base'
-// import { isPointWithinRect, isPointWithinInterval } from './math'
+import { Point } from '@type/base'
+import { isPointWithinRect, isPointWithinInterval } from './math'
 import * as moment from 'moment';
 
 const fileUtil = require('./file')
@@ -49,6 +49,7 @@ async function loadCube(): Promise<Cube>{
   return cubeInstance
 }
 
+
 // "00:06:33" ->  6/interval
 function timeToSliceIndex(time: string, interval:number){
   const a = moment(time, "HH:mm:ss");
@@ -56,26 +57,54 @@ function timeToSliceIndex(time: string, interval:number){
   return Math.floor(Number(m) / interval )
 }
 
-// 找到点对应的 cube id
-// async function getCubeCellIndexOfPoint(point: Point) {
-//   const cube = await loadCube()
-//   const cells = cube.cells  
+//  6/interval -> "00:06:33" 
+function sliceIndexToTime(idx:number, interval:number){
+  const m = idx * interval
+  const hour = Math.floor(m / 60)
+  const minute = m % 60
+  return moment().set({ hour, minute, second:0}).format("HH:mm:ss")
+}
 
-//   cells.find((cell) => {
-//     isPointWithinRect(point, 
-//       [
-//         cell.lng + cube.config.width,
-//         cell.lng,
-//         cell.lat + cube.config.width,
-//         cell.lat
-//       ]
-//     )
-//     // &&
-//     // isPointWithinInterval(point,
-//       // [cell.time, cell.time ]
-//     // )
-//   })
-// }
+// 找到某个点所对应的 cube 
+async function getCubeCellOfPoint(point: Point): Promise<CubeCell | undefined>{
+  const cube = await loadCube()
+  const cells = cube.cells  
+
+  for(let i = 0;i < cells.length;i++){
+    let cell = cells[i]
+    let areaRange = {
+      "minLat": cell.lat,
+      "maxLat": cell.lat + cube.config.width,
+      "minLng": cell.lng,
+      "maxLng": cell.lng + cube.config.width,
+    },
+    timeRange = {
+        min : sliceIndexToTime(cell.time, cube.config.timeSlice),
+        max: sliceIndexToTime(cell.time+1, cube.config.timeSlice)
+    }
+
+    const boolA = isPointWithinRect(
+        point, 
+        [
+          areaRange.maxLng,
+          areaRange.minLng,
+          areaRange.maxLat,
+          areaRange.minLat
+        ]
+    ),
+    boolB =isPointWithinInterval(
+        point,
+        [
+          timeRange.min,
+          timeRange.max
+        ]
+      )
+
+    if(boolA && boolB){
+      return cell
+    }
+  }
+}
 
 function _filterInGeo(cells:CubeCell[], config: CubeConfig, params:GeoParams): CubeCell[]{
   return cells.filter((cell:CubeCell) => (
@@ -121,9 +150,10 @@ function query({ cube, geoParams, timeParams, boolOp = BoolOperate['Intersection
 }
 
 
-
 export {
   loadCube,
   query,
-  timeToSliceIndex
+  timeToSliceIndex,
+  sliceIndexToTime,
+  getCubeCellOfPoint
 }

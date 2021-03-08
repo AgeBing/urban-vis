@@ -49,4 +49,12 @@ export default class Weibo extends Service {
     }
     return filterList
   }
+
+
+  public async queryPy(param: SpaceTimeParam | null, keyword: string| null){
+    let list:WeiboItem[] = await this.query(param, keyword)
+    return list.map((weibo:WeiboItem) => {
+        console.log(weibo)
+    })
+  }
 }

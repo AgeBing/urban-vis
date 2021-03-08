@@ -8,12 +8,24 @@ export interface Point{
   time: string
 }
 
+export interface Traj{
+  id: string,
+  points: Point[]
+}
+
 // 原子操作 的 布尔组合
 export const enum BoolOperate{
   Union = 1 ,  // 并集（只需满足其一）
   Intersection = 2,  // 交集 （同时满足）
 }
 
+// 数据源类型 DataSource
+export const enum DS{  
+  MobileTraj = 1,
+  TaxiTraj = 2,
+  Poi = 3,
+  Weibo = 4,
+}
 
 export interface SpaceTimeParam {
   geo?: GeoParam,
