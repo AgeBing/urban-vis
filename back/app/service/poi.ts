@@ -25,7 +25,7 @@ export default class POI extends Service {
    */
   public async list(geo = GEO_LIST, keyword = null): Promise<POIItem[]>{
     const { app } = this
-    
+    console.time('Select POI List')
     // const user = await app.mysql.select(TABLE);
     let sql = `select 
       uid as id, name, type, longitude, latitude
@@ -33,7 +33,8 @@ export default class POI extends Service {
       longitude > ${geo[1]} AND 
       longitude < ${geo[0]} AND 
       latitude > ${geo[3]} AND
-      latitude < ${geo[2]} 
+      latitude < ${geo[2]}
+      LIMIT 0, 2000
     `
 
     if(keyword){
@@ -43,8 +44,9 @@ export default class POI extends Service {
 
       // LIMIT 0,5000
     const pois:POIItem[] = await app.mysql.query(sql);
-    console.log("pois.length: ",pois.length)
+    console.log("POI length: ",pois.length)
     // console.log(pois[0])
+    console.timeEnd('Select POI List')
     return pois;
   }
 }

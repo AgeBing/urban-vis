@@ -22,6 +22,7 @@ export default class Weibo extends Service {
    * 按条件查询
    */
   public async query(param: SpaceTimeParam | null, keyword: string| null) : Promise<WeiboItem []>{
+    console.time('Select Weibo List')
     const list: WeiboItem[] = await this.list()
     if(!param && !keyword) return list
 
@@ -47,14 +48,8 @@ export default class Weibo extends Service {
         return (content.indexOf(keyword) != -1 ||  name.indexOf(keyword) != -1)
       })
     }
+    console.log('Weibo Length', filterList.length)
+    console.timeEnd('Select Weibo List')
     return filterList
-  }
-
-
-  public async queryPy(param: SpaceTimeParam | null, keyword: string| null){
-    let list:WeiboItem[] = await this.query(param, keyword)
-    return list.map((weibo:WeiboItem) => {
-        console.log(weibo)
-    })
   }
 }

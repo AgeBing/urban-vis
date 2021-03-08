@@ -2,6 +2,12 @@ export interface Trajectory{
   id: string, // 轨迹id
   segments: Point[][]
 }
+
+export interface GeoPoint{
+  longitude: number,
+  latitude: number,
+}
+
 export interface Point{
   longitude: number,
   latitude: number,
@@ -21,10 +27,10 @@ export const enum BoolOperate{
 
 // 数据源类型 DataSource
 export const enum DS{  
-  MobileTraj = 1,
-  TaxiTraj = 2,
-  Poi = 3,
-  Weibo = 4,
+  MobileTraj = 0,
+  TaxiTraj = 1,
+  Poi = 2,
+  Weibo = 3,
 }
 
 export interface SpaceTimeParam {

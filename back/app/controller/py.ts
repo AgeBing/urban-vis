@@ -24,7 +24,6 @@ export interface BbxAreaRange{
 }
 export type queryRes = queryResItem[]
 
-
 const staxi = Symbol();
 const sphone = Symbol();
 const spoi = Symbol();
@@ -32,27 +31,29 @@ const sweibo = Symbol();
 
 
 /**
- * Py 后端接口的处理逻辑 
+ * 给 Py 后端接口的处理逻辑 
  */
 export default class PyController extends Controller {
   public async query(){
     const { ctx } = this;
     let { source } = ctx.request.body
     this.logger.info('Python 端数据查询...')
-
-    // source = DS['TaxiTraj']
-    // console.log("source", source)
+    this.logger.info('Python 端数据查询...', ctx.request.body)
     
-    let res = await Funcfactory(
+    let res = []
+    res = await Funcfactory(
       {
         [staxi] : this.service.py.pyQuery.bind(this,source),
-        [sphone] : this.service.py.pyQuery.bind(this,source)
+        [sphone] : this.service.py.pyQuery.bind(this,source),
+        [sweibo]: this.service.py.pyQueryWeibo.bind(this),
+        [spoi]: this.service.py.pyQueryPOI.bind(this)
       },
       source,
       this
     )
 
-  
+    if(!res) return []
+
     this.logger.info('返回数据条数', res.length)
     res = res.slice(0, 100)
     this.logger.info('删减后数据条数', res.length)
@@ -91,7 +92,7 @@ export default class PyController extends Controller {
 
 
 /**
- * 少写点 switch 语句
+ * 可以 少写点 switch 语句
  */
 interface Factory {
   [staxi]?: Function,
@@ -116,7 +117,9 @@ const Funcfactory = async (config:Factory, source: DS, self) => {
       res = await config[sweibo]?.call(self)
       break
     default:
-      throw Error('找不到方法')
+      console.log('找不到方法')
+      // throw Error('找不到方法')
+      return []
   }
   return res
 }

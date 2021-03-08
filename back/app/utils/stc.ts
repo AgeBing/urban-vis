@@ -1,6 +1,8 @@
 import { Cube, CubeConfig, CubeCell, GeoParams, TimeParams } from '@type/cube'
 import { BoolOperate } from '@type/base'
-import { Point } from '@type/base'
+import { Point, GeoPoint } from '@type/base'
+// import { Point } from '@type/base'
+
 import { isPointWithinRect, isPointWithinInterval } from './math'
 import * as moment from 'moment';
 
@@ -45,10 +47,11 @@ async function loadCube(): Promise<Cube>{
       cellsInFilter: []
     }
     cubeInstance = cube
+    console.log('STC Cube Loaded~')
   }
   return cubeInstance
 }
-
+loadCube()
 
 // "00:06:33" ->  6/interval
 function timeToSliceIndex(time: string, interval:number){
@@ -63,6 +66,46 @@ function sliceIndexToTime(idx:number, interval:number){
   const hour = Math.floor(m / 60)
   const minute = m % 60
   return moment().set({ hour, minute, second:0}).format("HH:mm:ss")
+}
+
+
+// 计算出该坐标点所处的时空单元下标
+async function geoToCubeIndex(point: GeoPoint){
+  const { longitude: lng ,latitude: lat } = point
+  const config: CubeConfig = (await loadCube()).config
+  const { MinLat, MinLng,width, m  } = config
+
+  let lngIndex = Math.floor((lng - MinLng)/ width)
+  let latIndex = Math.floor((lat - MinLat)/ width)
+  let idx = latIndex * m + lngIndex
+  return idx
+}
+
+// 获取点的 STC cell 下标
+async function pointToCubeIndex(point: Point): Promise<string>{
+  const config: CubeConfig = (await loadCube()).config
+  const { timeSlice, m, n } = config
+  let { longitude, latitude, time } = point
+  let geoIdx = await geoToCubeIndex({longitude,latitude})
+  let timeIdx = timeToSliceIndex(time, timeSlice)
+  
+  let idx = m * n * timeIdx + geoIdx
+  return idx.toString()
+}
+
+async function getCubeCellBbx(idx:string) {
+  const cube = await loadCube()
+  const config:CubeConfig = cube.config
+  const { width,timeSlice } = config
+  const cell: CubeCell | undefined = cube.cells.find((cell) => cell.id.toString() === idx)
+  const { lat = 0, lng = 0, time = 0 } = cell || {}
+
+  const time1 = sliceIndexToTime(time, timeSlice)
+  const time2 = sliceIndexToTime(time + 1, timeSlice)
+  return {
+    timeRange: [time1, time2],
+    areaRange: [lng + width, lng, lat + width, lat]
+  }
 }
 
 // 找到某个点所对应的 cube 
@@ -154,5 +197,8 @@ export {
   query,
   timeToSliceIndex,
   sliceIndexToTime,
-  getCubeCellOfPoint
+  getCubeCellOfPoint,
+  geoToCubeIndex,
+  pointToCubeIndex,
+  getCubeCellBbx
 }
