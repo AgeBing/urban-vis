@@ -97,23 +97,29 @@ export default class STC extends Service{
    */
   public async getIdsInCells(cellsId: string[], source:DS): Promise<string[]>{
     console.time(`getIdsInCells`)
+    console.time(`getIdsInCells Load`)
     let data = await this.getData(source, STCIndexType['cube2data'])
+    console.timeEnd(`getIdsInCells Load`)
 
-    let idArr: string[] = [],
+    let idArr: Set<string> = new Set(),
         datasIncell = {}
+    // console.log(cellsId.length)
+    // console.time(`getIdsInCells for`)
+    cellsId.forEach((cellId:string) => {
+      // console.log(cellId)
+      datasIncell = data[cellId] || {}
 
-    Object.keys(data).map((cellId: string) => {
-      // 过滤 data，返回 cell 内的数据 id
-      if(cellsId.includes(cellId)){
-        datasIncell = data[cellId]
-        idArr = idArr.concat(
-          Object.keys(datasIncell)
-        )
-      }
+      Object.keys(datasIncell).forEach(id => {
+        idArr.add(id)
+      });
+      // idArr = idArr.concat(
+      //   Object.keys(datasIncell)
+      // )
     })
+    // console.timeEnd(`getIdsInCells for`)
 
     console.timeEnd('getIdsInCells')
-    return Array.from((new Set(idArr)))
+    return Array.from(idArr)
   }
 
   /**

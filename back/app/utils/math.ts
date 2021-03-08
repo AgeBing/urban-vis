@@ -68,9 +68,11 @@ export const isPointWithinInterval = (point: Point, timeParam: TimeParam) => {
 
 // "2014-01-14 23:57:12" => "23:57:12"
 export const timeFormat1 = (time:string) => {
-  const t = moment(time)
-  return t.format('HH:mm:ss')
+  // const t = moment(time)
+  // return t.format('HH:mm:ss')
+  return time.slice(11, 19)
 }
+// console.log(timeFormat1("2014-01-14 23:57:12"))
 
 /**
  * 计算时间区间
