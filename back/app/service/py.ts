@@ -27,6 +27,15 @@ export default class Py extends Service {
     const cellsId = cells.map(c => c.id.toString())
     let trajsIds:string[] = await stcService.getIdsInCells(cellsId, source)
     let res:queryRes = await stcService.getSTCInfoOfDatas(trajsIds, source)
+    
+    const resLength = Array.isArray(res) && res.length || 0
+
+    this.logger.info('cellsId: ', cellsId.length, ' trajsIds: ', trajsIds.length, '  res:',  resLength)
+
+    if(resLength == 0){
+      this.logger.info('返回结果为空！！')
+      return []
+    }
     return res;
   }
 

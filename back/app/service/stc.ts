@@ -13,22 +13,22 @@ enum STCIndexType{
   'cube2data'
 }
 const FILE_PATH = {
-  [DS['MobileTraj']]:{
+  [(DS['MobileTraj']+ 1).toString()]:{
     [STCIndexType['data2cube']]: 'phoneSDATA.json',
     [STCIndexType['cube2data']]: 'phoneSTCube.json',
   },
-  [DS['TaxiTraj']]:{
+  [(DS['TaxiTraj']+ 1).toString()]:{
     [STCIndexType['data2cube']]: 'taxiSDATA.json',
     [STCIndexType['cube2data']]: 'taxiSTCube.json',
   }
 }
 
 const datas = {
-  [DS['MobileTraj']]:{
+  [(DS['MobileTraj'] + 1).toString()]:{
     [STCIndexType['data2cube']]: null,
     [STCIndexType['cube2data']]: null,
   },
-  [DS['TaxiTraj']]:{
+  [(DS['TaxiTraj'] +  1).toString()]:{
     [STCIndexType['data2cube']]: null,
     [STCIndexType['cube2data']]: null,
   }
@@ -38,12 +38,13 @@ export default class STC extends Service{
 
 
   public async getData(source:DS, indexType:STCIndexType){
-    if(!datas[source.toString()][indexType]){
+    const sourceIdx = (source+ 1).toString()
+    if(!datas[sourceIdx][indexType]){
       // 读取一次性所有数据，此处需要读取大文件
-      let data = await fileUtil.readJson(FILE_PATH[source.toString()][indexType])
-      datas[source.toString()][indexType] = data
+      let data = await fileUtil.readJson(FILE_PATH[sourceIdx][indexType])
+      datas[sourceIdx][indexType] = data
     }
-    return datas[source.toString()][indexType]
+    return datas[sourceIdx][indexType] || {}
   }
 
   /**
@@ -197,7 +198,8 @@ export default class STC extends Service{
   public async getSTCInfoOfDatas(datasID: string[], source:DS): Promise<queryRes>{
     console.time('getSTCInfoofDatas')
     let data = await this.getData(source, STCIndexType['data2cube'])
-    let res: queryRes  = datasID.map((id: string) => {
+    let res: queryRes = []
+    res  = datasID.map((id: string) => {
       const { bbx, stcubes } = data[id.toString()] || {}
       if(!bbx || !stcubes){
         this.logger.error(`数据 ${id} 在 data2cube 文件中找不到索引`)

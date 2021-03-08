@@ -31,7 +31,6 @@ const spoi = Symbol();
 const sweibo = Symbol();
 
 
-
 /**
  * Py 后端接口的处理逻辑 
  */
@@ -42,9 +41,9 @@ export default class PyController extends Controller {
     this.logger.info('Python 端数据查询...')
 
     // source = DS['TaxiTraj']
-    console.log("source", source)
-
-    ctx.body = await Funcfactory(
+    // console.log("source", source)
+    
+    let res = await Funcfactory(
       {
         [staxi] : this.service.py.pyQuery.bind(this,source),
         [sphone] : this.service.py.pyQuery.bind(this,source)
@@ -52,6 +51,12 @@ export default class PyController extends Controller {
       source,
       this
     )
+
+  
+    this.logger.info('返回数据条数', res.length)
+    res = res.slice(0, 100)
+    this.logger.info('删减后数据条数', res.length)
+    ctx.body = res
   }
 
   public async getOneData() {
@@ -78,7 +83,7 @@ export default class PyController extends Controller {
       {
         // [staxi] : this.service.taxi.isOneTaxiInBbox.bind(id, bbox)
       },
-      source,
+      source, 
       this
     )
   }
@@ -96,7 +101,7 @@ interface Factory {
 }
 const Funcfactory = async (config:Factory, source: DS, self) => {
   // let { source: s } = self.ctx.request.body
-  let res
+  let res = []
   switch(source){
     case DS['TaxiTraj']:
       res = await config[staxi]?.call(self)
