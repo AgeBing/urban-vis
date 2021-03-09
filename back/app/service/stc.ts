@@ -84,6 +84,7 @@ export default class STC extends Service{
       }
     }
 
+    console.log('query', geoParams, timeParams)
     query({ cube, geoParams, timeParams, boolOp })
 
     console.timeEnd('queryCellsInRange')

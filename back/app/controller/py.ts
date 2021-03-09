@@ -36,10 +36,17 @@ const sweibo = Symbol();
 export default class PyController extends Controller {
   public async query(){
     const { ctx } = this;
-    let { source } = ctx.request.body
+    let { source, attr } = ctx.request.body
     this.logger.info('Python 端数据查询...')
     this.logger.info('Python 端数据查询...', ctx.request.body)
     
+
+    // 条件转换
+    if(attr){
+      const { S:geo, T:time } = attr
+      ctx.request.body = Object.assign(ctx.request.body, { geo, time })
+    }
+
     let res = []
     res = await Funcfactory(
       {
@@ -55,7 +62,8 @@ export default class PyController extends Controller {
     if(!res) return []
 
     this.logger.info('返回数据条数', res.length)
-    res = res.slice(0, 100)
+    // 返回全部轨迹数据
+    // res = res.slice(0, 100)
     this.logger.info('删减后数据条数', res.length)
     ctx.body = res
   }

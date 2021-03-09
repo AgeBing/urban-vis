@@ -5,7 +5,6 @@ import { Point, GeoPoint } from '@type/base'
 
 import { isPointWithinRect, isPointWithinInterval } from './math'
 import * as moment from 'moment';
-
 const fileUtil = require('./file')
 const _ = require('lodash/array');
 
@@ -149,13 +148,29 @@ async function getCubeCellOfPoint(point: Point): Promise<CubeCell | undefined>{
   }
 }
 
-function _filterInGeo(cells:CubeCell[], config: CubeConfig, params:GeoParams): CubeCell[]{
+/**
+ * 用正方形来框选时空立方体单元
+ * @param cells 
+ * @param config 
+ * @param params 
+ * @returns 
+ */
+function _filterInGeo(cells:CubeCell[], c: CubeConfig, p:GeoParams): CubeCell[]{
   return cells.filter((cell:CubeCell) => (
-    (cell.lat <= params.MaxLat) && 
-    (cell.lat - config.width >= params.MinLat) && 
-    (cell.lng >= params.MinLng) && 
-    (cell.lng + config.width <= params.MaxLng)
-  ))
+    (
+      (cell.lng >= p.MinLng && cell.lng <= p.MaxLng ) ||
+      (cell.lng <= p.MinLng && (cell.lng + c.width) >= p.MinLng)
+    ) && 
+    (
+      (cell.lat >= p.MinLat && cell.lat <= p.MaxLat ) ||
+      (cell.lat <= p.MinLat && (cell.lat + c.width) >= p.MinLat)
+    )
+  )
+    // (cell.lat <= params.MaxLat) && 
+    // (cell.lat - config.width >= params.MinLat) && 
+    // (cell.lng >= params.MinLng) && 
+    // (cell.lng + config.width <= params.MaxLng)
+  )
 }
 function _filterInTime(cells:CubeCell[], params:TimeParams): CubeCell[]{
   return cells.filter((cell:CubeCell) => (
@@ -171,10 +186,12 @@ function query({ cube, geoParams, timeParams, boolOp = BoolOperate['Intersection
   let filteredCellsArr: CubeCell[][] = []
   if(geoParams){
     filteredCells = _filterInGeo(cube.cells, cube.config, geoParams)
+    console.log("_filterInGeo", filteredCells.length)
     filteredCellsArr.push( filteredCells )
   }
   if(timeParams){
     filteredCells = _filterInTime(cube.cells, timeParams)
+    console.log("_filterInTime", filteredCells.length)
     filteredCellsArr.push( filteredCells )
   }
   console.log("Bool Mode ", boolOp)
