@@ -29,8 +29,8 @@ export const enum BoolOperate{
 export const enum DS{  
   MobileTraj = 0,
   TaxiTraj = 1,
-  Poi = 2,
-  Weibo = 3,
+  Weibo = 2,
+  Poi = 3,
 }
 
 export interface SpaceTimeParam {
