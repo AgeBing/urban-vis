@@ -24,6 +24,7 @@ export default class POI extends Service {
    * 获取POI数据列表
    */
   public async list(geo = GEO_LIST, keyword = null): Promise<POIItem[]>{
+    if(!geo) geo = GEO_LIST
     const { app } = this
     console.time('Select POI List')
     // const user = await app.mysql.select(TABLE);
@@ -34,8 +35,8 @@ export default class POI extends Service {
       longitude < ${geo[0]} AND 
       latitude > ${geo[3]} AND
       latitude < ${geo[2]}
-      LIMIT 0, 2000
     `
+      // LIMIT 0, 2000
 
     if(keyword){
       // POI 名称中包含 keyword

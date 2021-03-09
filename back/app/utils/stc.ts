@@ -13,6 +13,10 @@ const FILES_PATH = {
   CUBE_CELLS: 'STCube.json'
 }
 
+/**
+ * 一、初始化部分
+ */
+
 async function _loadSTCConfig(): Promise<CubeConfig>{
   const c = await fileUtil.readJson(FILES_PATH['CUBE_CONFIG'])
   return {
@@ -52,12 +56,27 @@ async function loadCube(): Promise<Cube>{
 }
 loadCube()
 
+
+
+/**
+ *  二、计算转换部分
+ */
+
+
 // "00:06:33" ->  6/interval
 function timeToSliceIndex(time: string, interval:number){
   const a = moment(time, "HH:mm:ss");
   const m = a.hour() * 60 + a.minute();
   return Math.floor(Number(m) / interval )
 }
+
+// "2014-02-12 00:06" ->  6/interval
+function dateTimeToSliceIndex(time: string, interval:number){
+  const a = moment(time)
+  const m = a.hour() * 60 + a.minute();
+  return Math.floor(Number(m) / interval )
+}
+
 
 //  6/interval -> "00:06:33" 
 function sliceIndexToTime(idx:number, interval:number){
@@ -76,6 +95,8 @@ async function geoToCubeIndex(point: GeoPoint){
 
   let lngIndex = Math.floor((lng - MinLng)/ width)
   let latIndex = Math.floor((lat - MinLat)/ width)
+  if(lngIndex < 0 || latIndex < 0)
+    return -1
   let idx = latIndex * m + lngIndex
   return idx
 }
@@ -86,12 +107,14 @@ async function pointToCubeIndex(point: Point): Promise<string>{
   const { timeSlice, m, n } = config
   let { longitude, latitude, time } = point
   let geoIdx = await geoToCubeIndex({longitude,latitude})
-  let timeIdx = timeToSliceIndex(time, timeSlice)
-  
+  let timeIdx = dateTimeToSliceIndex(time, timeSlice)
+  if(geoIdx === -1) return "-1"
   let idx = m * n * timeIdx + geoIdx
   return idx.toString()
 }
 
+
+// 计算 cube cell 对应的范围信息，若超出范围 范围 null
 async function getCubeCellBbx(idx:string) {
   const cube = await loadCube()
   const config:CubeConfig = cube.config
@@ -153,8 +176,16 @@ async function getCubeCellOfPoint(point: Point): Promise<CubeCell | undefined>{
   }
 }
 
+
+
+/**
+ *  三、查询部分
+ */
+
+
 /**
  * 用正方形来框选时空立方体单元
+ * 精确比较范围
  * @param cells 
  * @param config 
  * @param params 
@@ -177,9 +208,12 @@ function _filterInGeo(cells:CubeCell[], c: CubeConfig, p:GeoParams): CubeCell[]{
     // (cell.lng + config.width <= params.MaxLng)
   )
 }
-function _filterInTime(cells:CubeCell[], params:TimeParams): CubeCell[]{
+
+// 比较 cell id index
+function _filterInTime(cells:CubeCell[], p:TimeParams): CubeCell[]{
   return cells.filter((cell:CubeCell) => (
-    cell.time >= params.MinTime && cell.time <= params.MaxTime
+    // cell.time >= params.MinTime && cell.time <= params.MaxTime
+    cell.time >= p.MinTime && cell.time <= p.MaxTime
   ))
 }
 
@@ -199,8 +233,8 @@ function query({ cube, geoParams, timeParams, boolOp = BoolOperate['Intersection
     console.log("_filterInTime", filteredCells.length)
     filteredCellsArr.push( filteredCells )
   }
-  console.log("Bool Mode ", boolOp)
-  console.log("Befor Bool ", filteredCellsArr[0]?.length,  filteredCellsArr[1]?.length)
+
+  console.log("布尔操作 ", filteredCellsArr[0]?.length,  filteredCellsArr[1]?.length, boolOp)
   let boolResult = []
   if(boolOp === BoolOperate['Union']){
     // https://lodash.com/docs/4.17.15#union
@@ -211,13 +245,14 @@ function query({ cube, geoParams, timeParams, boolOp = BoolOperate['Intersection
     boolResult = _.intersectionBy(filteredCellsArr[0], filteredCellsArr[1], 'id')  
   }
   cube.cellsInFilter = boolResult
-  console.log("After Bool ", cube.cellsInFilter.length)
+  console.log("布尔操作后返回单元数 ", cube.cellsInFilter.length)
 }
    
 export {
   loadCube,
   query,
   timeToSliceIndex,
+  dateTimeToSliceIndex,
   sliceIndexToTime,
   getCubeCellOfPoint,
   geoToCubeIndex,

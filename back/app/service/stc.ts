@@ -35,8 +35,7 @@ const datas = {
 }
 
 export default class STC extends Service{
-
-
+  // 数据缓存
   public async getData(source:DS, indexType:STCIndexType){
     const sourceIdx = (source+ 1).toString()
     if(!datas[sourceIdx][indexType]){
@@ -228,4 +227,6 @@ export default class STC extends Service{
     console.timeEnd('getSTCInfoofDatas')
     return res
   }
+
+  
 }

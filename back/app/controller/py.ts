@@ -68,35 +68,6 @@ export default class PyController extends Controller {
     this.logger.info('删减后数据条数', res.length)
     ctx.body = res
   }
-
-  public async getOneData() {
-    const { ctx } = this;
-    const self = this
-    this.logger.info('获取单条特定数据...')
-    let { source } = ctx.request.body
-
-    ctx.body = await Funcfactory(
-      {
-        // [staxi] : this.service.taxi.getOneTaxi.bind(id)
-      },
-      source,
-      self
-    )
-  }
-
-  public async isOneDataInBBox() {
-    const { ctx } = this;
-    this.logger.info('获取数据是否在范围内...')
-    let { source } = ctx.request.body
-    
-    ctx.body = await Funcfactory(
-      {
-        // [staxi] : this.service.taxi.isOneTaxiInBbox.bind(id, bbox)
-      },
-      source, 
-      this
-    )
-  }
 }
 
 
