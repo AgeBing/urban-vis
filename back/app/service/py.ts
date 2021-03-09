@@ -39,7 +39,7 @@ export default class Py extends Service {
     this.logger.info('cellsId: ', cellsId.length, ' trajsIds: ', trajsIds.length, '  res:',  resLength)
 
     if(resLength == 0){
-      this.logger.info('返回结果为空！！')
+      this.logger.error('时空过滤结果为空！！', ctx.request.body)
       return []
     }
     return res;
@@ -72,6 +72,7 @@ export default class Py extends Service {
       })
 
       const bbx = await getCubeCellBbx(cubeId)
+      if(!bbx) return undefined
 
       return {
         id,
@@ -80,7 +81,7 @@ export default class Py extends Service {
       }
     })
 
-    return Promise.all(ps)
+    return (await Promise.all(ps)).filter(x => x)
   }
 
 
@@ -108,6 +109,7 @@ export default class Py extends Service {
       const cubeId = (await geoToCubeIndex({ longitude, latitude})).toString()
       const bbx = await getCubeCellBbx(cubeId.toString())
 
+      if(!bbx) return undefined
       /**
           cube 第 0 层， 时间为 0
            "timeRange": [
@@ -122,7 +124,7 @@ export default class Py extends Service {
       }
     })
 
-    return Promise.all(ps)
+    return (await Promise.all(ps)).filter(x => x)
   }
 
 }

@@ -1,13 +1,14 @@
 import { Controller } from 'egg';
 import { DS } from '@type/base'
+
 /**
  * 字段格式定义
  */
-export interface queryResItem{
+export type queryResItem = {
   id: string,  // 数据项 id
   stcubes?: string[], // 该条数据轨迹传过的 cube cell id
-  bbx?: Bbx  // 包围盒
-}
+  bbx?: Bbx | null // 包围盒
+} | undefined
 export interface Bbx{
   timeRange: string[],
   areaRange: number[]

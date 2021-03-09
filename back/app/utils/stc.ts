@@ -97,6 +97,11 @@ async function getCubeCellBbx(idx:string) {
   const config:CubeConfig = cube.config
   const { width,timeSlice } = config
   const cell: CubeCell | undefined = cube.cells.find((cell) => cell.id.toString() === idx)
+
+  if(!cell){
+    return null
+  }
+
   const { lat = 0, lng = 0, time = 0 } = cell || {}
 
   const time1 = sliceIndexToTime(time, timeSlice)
