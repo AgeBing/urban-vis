@@ -128,7 +128,8 @@ async function getCubeCellBbx(idx:string) {
   const { lat = 0, lng = 0, time = 0 } = cell || {}
 
   const time1 = sliceIndexToTime(time, timeSlice)
-  const time2 = sliceIndexToTime(time + 1, timeSlice)
+  let time2 = sliceIndexToTime(time + 1, timeSlice) 
+  if(time2 === "00:00:00") time2 = "23:59:59"
   return {
     timeRange: [time1, time2],
     areaRange: [lng + width, lng, lat + width, lat]
