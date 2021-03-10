@@ -1,14 +1,14 @@
 import { Controller } from 'egg';
-import { DS } from '@type/base'
-
+import { DS } from '@type/base';
+import { DEFAULT_GEO, DEFAULT_TIME } from '../utils/stc'
 /**
  * 字段格式定义
  */
 export type queryResItem = {
-  id: string,  // 数据项 id
+  id: string, // 数据项 id
   stcubes?: string[], // 该条数据轨迹传过的 cube cell id
   bbx?: Bbx | null // 包围盒
-} | undefined
+} | undefined;
 export interface Bbx{
   timeRange: string[],
   areaRange: number[]
@@ -23,7 +23,7 @@ export interface BbxAreaRange{
   minLng: number,
   maxLng: number
 }
-export type queryRes = queryResItem[]
+export type queryRes = queryResItem[];
 
 const staxi = Symbol();
 const sphone = Symbol();
@@ -32,41 +32,43 @@ const sweibo = Symbol();
 
 
 /**
- * 给 Py 后端接口的处理逻辑 
+ * 给 Py 后端接口的处理逻辑
  */
 export default class PyController extends Controller {
-  public async query(){
+  public async query() {
     const { ctx } = this;
-    let { source, attr } = ctx.request.body
-    this.logger.info('Python 端数据查询...')
-    this.logger.info('Python 端数据查询...', ctx.request.body)
-    
+    const { source, attr } = ctx.request.body;
+    this.logger.info('Python 端数据查询...');
+    this.logger.info('Python 端数据查询...', ctx.request.body);
+
 
     // 条件转换
-    if(attr){
-      const { S:geo, T:time } = attr
-      ctx.request.body = Object.assign(ctx.request.body, { geo, time })
+    if (attr) {
+      let { S: geo, T: time } = attr;
+      if(!geo)  geo = DEFAULT_GEO
+      if(!time) time = DEFAULT_TIME
+      ctx.request.body = Object.assign(ctx.request.body, { geo, time });
     }
 
-    let res = []
+    let res = [];
     res = await Funcfactory(
       {
-        [staxi] : this.service.py.pyQuery.bind(this,source),
-        [sphone] : this.service.py.pyQuery.bind(this,source),
+        [staxi]: this.service.py.pyQuery.bind(this, source),
+        [sphone]: this.service.py.pyQuery.bind(this, source),
         [sweibo]: this.service.py.pyQueryWeibo.bind(this),
-        [spoi]: this.service.py.pyQueryPOI.bind(this)
+        [spoi]: this.service.py.pyQueryPOI.bind(this),
       },
       source,
-      this
-    )
+      this,
+    );
 
-    if(!res) return []
+    if (!res) return [];
 
-    this.logger.info('返回数据条数', res.length)
+    this.logger.info('返回数据条数', res.length);
     // 返回全部轨迹数据
     // res = res.slice(0, 100)
-    this.logger.info('删减后数据条数', res.length)
-    ctx.body = res
+    this.logger.info('删减后数据条数', res.length);
+    ctx.body = res;
   }
 }
 
@@ -82,24 +84,24 @@ interface Factory {
 }
 const Funcfactory = async (config:Factory, source: DS, self) => {
   // let { source: s } = self.ctx.request.body
-  let res = []
-  switch(source){
-    case DS['TaxiTraj']:
-      res = await config[staxi]?.call(self)
-      break
-    case DS['MobileTraj']:
-      res = await config[sphone]?.call(self)
-      break
-    case DS['Poi']:
-      res = await config[spoi]?.call(self)
-      break
-    case DS['Weibo']:
-      res = await config[sweibo]?.call(self)
-      break
+  let res = [];
+  switch (source) {
+    case DS.TaxiTraj:
+      res = await config[staxi]?.call(self);
+      break;
+    case DS.MobileTraj:
+      res = await config[sphone]?.call(self);
+      break;
+    case DS.Poi:
+      res = await config[spoi]?.call(self);
+      break;
+    case DS.Weibo:
+      res = await config[sweibo]?.call(self);
+      break;
     default:
-      console.log('找不到方法')
+      console.log('找不到方法');
       // throw Error('找不到方法')
-      return []
+      return [];
   }
-  return res
-}
+  return res;
+};

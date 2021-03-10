@@ -1,58 +1,58 @@
 import { Service } from 'egg';
-import { Cube, CubeCell, GeoParams, TimeParams, STCDataItem } from '@type/cube'
-import { BoolOperate, DS, Point } from '@type/base'
-import { query, loadCube, timeToSliceIndex } from '../utils/stc'
+import { Cube, CubeCell, GeoParams, TimeParams, STCDataItem } from '@type/cube';
+import { BoolOperate, DS, Point } from '@type/base';
+import { query, loadCube, timeToSliceIndex } from '../utils/stc';
 
-import { queryRes } from '../controller/py'
-import { timeFormat1 } from '../utils/math' 
+import { queryRes } from '../controller/py';
+import { timeFormat1 } from '../utils/math';
 
-const fileUtil = require('../utils/file')
+const fileUtil = require('../utils/file');
 
 enum STCIndexType{
   'data2cube',
   'cube2data'
 }
 const FILE_PATH = {
-  [(DS['MobileTraj']+ 1).toString()]:{
-    [STCIndexType['data2cube']]: 'phoneSDATA.json',
-    [STCIndexType['cube2data']]: 'phoneSTCube.json',
+  [(DS.MobileTraj + 1).toString()]: {
+    [STCIndexType.data2cube]: 'phoneSDATA.json',
+    [STCIndexType.cube2data]: 'phoneSTCube.json',
   },
-  [(DS['TaxiTraj']+ 1).toString()]:{
-    [STCIndexType['data2cube']]: 'taxiSDATA.json',
-    [STCIndexType['cube2data']]: 'taxiSTCube.json',
-  }
-}
+  [(DS.TaxiTraj + 1).toString()]: {
+    [STCIndexType.data2cube]: 'taxiSDATA.json',
+    [STCIndexType.cube2data]: 'taxiSTCube.json',
+  },
+};
 
 const datas = {
-  [(DS['MobileTraj'] + 1).toString()]:{
-    [STCIndexType['data2cube']]: null,
-    [STCIndexType['cube2data']]: null,
+  [(DS.MobileTraj + 1).toString()]: {
+    [STCIndexType.data2cube]: null,
+    [STCIndexType.cube2data]: null,
   },
-  [(DS['TaxiTraj'] +  1).toString()]:{
-    [STCIndexType['data2cube']]: null,
-    [STCIndexType['cube2data']]: null,
-  }
-}
+  [(DS.TaxiTraj + 1).toString()]: {
+    [STCIndexType.data2cube]: null,
+    [STCIndexType.cube2data]: null,
+  },
+};
 
-export default class STC extends Service{
+export default class STC extends Service {
   // 数据缓存
-  public async getData(source:DS, indexType:STCIndexType){
-    const sourceIdx = (source+ 1).toString()
-    if(!datas[sourceIdx][indexType]){
+  public async getData(source:DS, indexType:STCIndexType) {
+    const sourceIdx = (source + 1).toString();
+    if (!datas[sourceIdx][indexType]) {
       // 读取一次性所有数据，此处需要读取大文件
-      let data = await fileUtil.readJson(FILE_PATH[sourceIdx][indexType])
-      datas[sourceIdx][indexType] = data
+      const data = await fileUtil.readJson(FILE_PATH[sourceIdx][indexType]);
+      datas[sourceIdx][indexType] = data;
     }
-    return datas[sourceIdx][indexType] || {}
+    return datas[sourceIdx][indexType] || {};
   }
 
   /**
    * 查询符合条件范围的 立方体单元
    */
-  public async queryCellsInRange(): Promise<CubeCell[]>{
-    const { ctx } = this
-    console.time('queryCellsInRange')
-    const cube: Cube = await loadCube()
+  public async queryCellsInRange(): Promise<CubeCell[]> {
+    const { ctx } = this;
+    console.time('queryCellsInRange');
+    const cube: Cube = await loadCube();
 
     /**
       *  // geo: [maxlng, minlng, maxlat, minlat]
@@ -60,34 +60,35 @@ export default class STC extends Service{
       *  // time: [min, max]
       *  time: ["00:06:33", "00:12:56"]
      */
-    const { geo, time, boolOp = BoolOperate['Union'] } = ctx.request.body
+    const { geo, time, boolOp = BoolOperate['Intersection'] } = ctx.request.body;
+    console.log("queryCellsInRange", geo, time)
     let geoParams: GeoParams | null = null,
-        timeParams:TimeParams | null = null
+      timeParams:TimeParams | null = null;
 
-    if(Array.isArray(geo) && geo.length === 4){
-      geoParams= {
+    if (Array.isArray(geo) && geo.length === 4) {
+      geoParams = {
         MaxLng: ctx.request.body.geo[0],
         MinLng: ctx.request.body.geo[1],
         MaxLat: ctx.request.body.geo[2],
-        MinLat: ctx.request.body.geo[3]
-      }
+        MinLat: ctx.request.body.geo[3],
+      };
     }
 
-    if(Array.isArray(time) && time.length === 2){
-      let minTime = ctx.request.body.time[0],
-          maxTime = ctx.request.body.time[1],
-          timeInterval = cube.config.timeSlice
-      timeParams= {
+    if (Array.isArray(time) && time.length === 2) {
+      const minTime = ctx.request.body.time[0],
+        maxTime = ctx.request.body.time[1],
+        timeInterval = cube.config.timeSlice;
+      timeParams = {
         MinTime: timeToSliceIndex(minTime, timeInterval),
-        MaxTime:  timeToSliceIndex(maxTime, timeInterval),
-      }
+        MaxTime: timeToSliceIndex(maxTime, timeInterval),
+      };
     }
 
-    console.log('query', geoParams, timeParams)
-    query({ cube, geoParams, timeParams, boolOp })
+    console.log('query', geoParams, timeParams);
+    query({ cube, geoParams, timeParams, boolOp });
 
-    console.timeEnd('queryCellsInRange')
-    return cube.cellsInFilter
+    console.timeEnd('queryCellsInRange');
+    return cube.cellsInFilter;
   }
 
   /**
@@ -95,31 +96,31 @@ export default class STC extends Service{
    * @param cells 时空立方体单元
    * @param source 数据源
    */
-  public async getIdsInCells(cellsId: string[], source:DS): Promise<string[]>{
-    console.time(`getIdsInCells`)
-    console.time(`getIdsInCells Load`)
-    let data = await this.getData(source, STCIndexType['cube2data'])
-    console.timeEnd(`getIdsInCells Load`)
+  public async getIdsInCells(cellsId: string[], source:DS): Promise<string[]> {
+    console.time('getIdsInCells');
+    console.time('getIdsInCells Load');
+    const data = await this.getData(source, STCIndexType.cube2data);
+    console.timeEnd('getIdsInCells Load');
 
     let idArr: Set<string> = new Set(),
-        datasIncell = {}
+      datasIncell = {};
     // console.log(cellsId.length)
     // console.time(`getIdsInCells for`)
     cellsId.forEach((cellId:string) => {
       // console.log(cellId)
-      datasIncell = data[cellId] || {}
+      datasIncell = data[cellId] || {};
 
       Object.keys(datasIncell).forEach(id => {
-        idArr.add(id)
+        idArr.add(id);
       });
       // idArr = idArr.concat(
       //   Object.keys(datasIncell)
       // )
-    })
+    });
     // console.timeEnd(`getIdsInCells for`)
 
-    console.timeEnd('getIdsInCells')
-    return Array.from(idArr)
+    console.timeEnd('getIdsInCells');
+    return Array.from(idArr);
   }
 
   /**
@@ -127,50 +128,50 @@ export default class STC extends Service{
    * @param cells 时空立方体单元
    * @param source 数据源
    */
-  public async getDatasInCells(cellsId: string[], source:DS): Promise<STCDataItem[]>{
-    console.time(`getDatasInCells`)
-    let data = await this.getData(source, STCIndexType['cube2data'])
+  public async getDatasInCells(cellsId: string[], source:DS): Promise<STCDataItem[]> {
+    console.time('getDatasInCells');
+    const data = await this.getData(source, STCIndexType.cube2data);
 
     let allData = {},
-        datasIncell = {}
+      datasIncell = {};
 
     Object.keys(data).map(cellId => {
       // 过滤 data，返回 cell 内的轨迹数据
-      if(!cellsId.includes(cellId)) delete data[cellId]
-      else{
+      if (!cellsId.includes(cellId)) delete data[cellId];
+      else {
         // 将处于不同cell内的轨迹片段合并
-        datasIncell = data[cellId]
+        datasIncell = data[cellId];
         Object.keys(datasIncell).map((dataId:string) => {
-          if(!allData[dataId]){
-            allData[dataId] = {}
+          if (!allData[dataId]) {
+            allData[dataId] = {};
           }
-          Object.assign(allData[dataId], datasIncell[dataId])
-        })
+          Object.assign(allData[dataId], datasIncell[dataId]);
+        });
       }
-    })
+    });
 
-    const datasArr:STCDataItem[] = [] 
+    const datasArr:STCDataItem[] = [];
 
     // 对每一条轨迹的片段进行排序, 按照下标排序
     Object.keys(allData).map((dataId:string) => {
       // 轨迹片段
-      let segments = allData[dataId]
+      const segments = allData[dataId];
       // 轨迹片段下标
-      let segmentIds = Object.keys(segments)
-      let sortedSegments:Point[][] = []
+      const segmentIds = Object.keys(segments);
+      let sortedSegments:Point[][] = [];
       // 排序
-      segmentIds.sort((a,b) => Number(a) - Number(b))
+      segmentIds.sort((a, b) => Number(a) - Number(b));
       // 合并
-      if(segmentIds.length <= 1){
-        sortedSegments = Object.values(segments)
-      }else{
-        sortedSegments.push(segments[segmentIds[0]])
-        for(let i = 1; i < segmentIds.length;i++){
-          if(1 === (Number(segmentIds[i]) - Number(segmentIds[i-1]))){ // 相邻的
-            let lastIdx = sortedSegments.length - 1
-            sortedSegments[lastIdx].push(...segments[segmentIds[i]])
-          }else{ //  非相邻
-            sortedSegments.push(segments[segmentIds[i]])
+      if (segmentIds.length <= 1) {
+        sortedSegments = Object.values(segments);
+      } else {
+        sortedSegments.push(segments[segmentIds[0]]);
+        for (let i = 1; i < segmentIds.length; i++) {
+          if ((Number(segmentIds[i]) - Number(segmentIds[i - 1])) === 1) { // 相邻的
+            const lastIdx = sortedSegments.length - 1;
+            sortedSegments[lastIdx].push(...segments[segmentIds[i]]);
+          } else { //  非相邻
+            sortedSegments.push(segments[segmentIds[i]]);
           }
         }
       }
@@ -179,9 +180,9 @@ export default class STC extends Service{
       sortedSegments.map((segment, i) => {
         datasArr.push({
           id: dataId + '-' + i,
-          data: segment
-        })
-      })
+          data: segment,
+        });
+      });
 
       // 2. 将每一段合成一条
       // sortedSegments.map(segment => {
@@ -190,43 +191,43 @@ export default class STC extends Service{
       //       points: segment.reduce((a,b)=> a.concat(b),[])
       //   })
       // })
-    })
-    console.timeEnd(`getDatasInCells`)
-    return datasArr
+    });
+    console.timeEnd('getDatasInCells');
+    return datasArr;
   }
 
 
   /**
    * 获取每个数据的 索引信息
-   * @param datasID 数据 id 
+   * @param datasID 数据 id
    * @param source 数据源
    */
-  public async getSTCInfoOfDatas(datasID: string[], source:DS): Promise<queryRes>{
-    console.time('getSTCInfoofDatas')
-    let data = await this.getData(source, STCIndexType['data2cube'])
-    let res: queryRes = []
-    res  = datasID.map((id: string) => {
-      const { bbx, stcubes } = data[id.toString()] || {}
-      if(!bbx || !stcubes){
-        this.logger.error(`数据 ${id} 在 data2cube 文件中找不到索引`)
-        return { id }
+  public async getSTCInfoOfDatas(datasID: string[], source:DS): Promise<queryRes> {
+    console.time('getSTCInfoofDatas');
+    const data = await this.getData(source, STCIndexType.data2cube);
+    let res: queryRes = [];
+    res = datasID.map((id: string) => {
+      const { bbx, stcubes } = data[id.toString()] || {};
+      if (!bbx || !stcubes) {
+        this.logger.error(`数据 ${id} 在 data2cube 文件中找不到索引`);
+        return { id };
       }
 
-      const { timeRange:t, areaRange:a } = bbx
+      const { timeRange: t, areaRange: a } = bbx;
 
-      return { 
-        id, 
+      return {
+        id,
         stcubes,
         bbx: {
-          timeRange: [timeFormat1(t['min']), timeFormat1(t['max'])],
-          areaRange: [a['maxLng'], a['minLng'], a['maxLat'], a['minLat']]
-        }
-      }
-    })
+          timeRange: [ timeFormat1(t.min), timeFormat1(t.max) ],
+          areaRange: [ a.maxLng, a.minLng, a.maxLat, a.minLat ],
+        },
+      };
+    });
 
-    console.timeEnd('getSTCInfoofDatas')
-    return res
+    console.timeEnd('getSTCInfoofDatas');
+    return res;
   }
 
-  
+
 }
