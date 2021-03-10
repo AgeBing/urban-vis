@@ -26,3 +26,4 @@ yarn-error.log*
 back/.github/
 *.code-workspace
 /原始数据
+/type/*.js
