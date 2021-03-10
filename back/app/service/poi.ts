@@ -1,20 +1,10 @@
 import { Service } from 'egg';
 import { POIItem } from '@type/poi';
-// const fileUtil = require('../utils/file')
-import { GeoParam } from '@type/base';
 
 const TABLE = 'poi';
-const GEO = { // 地理范围
-  longitude: [ 120.567924, 120.787542 ],
-  latitude: [ 27.859125, 28.071486 ],
-};
 
-const GEO_LIST:GeoParam = [
-  GEO.longitude[1],
-  GEO.longitude[0],
-  GEO.latitude[1],
-  GEO.latitude[0],
-];
+
+import { DEFAULT_GEO } from '../utils/stc'
 /**
  * POI Service
  */
@@ -23,8 +13,8 @@ export default class POI extends Service {
   /**
    * 获取POI数据列表
    */
-  public async list(geo = GEO_LIST, keyword = null): Promise<POIItem[]> {
-    if (!geo) geo = GEO_LIST;
+  public async list(geo = DEFAULT_GEO, keyword = null): Promise<POIItem[]> {
+    if (!geo) geo = DEFAULT_GEO;
     const { app } = this;
     console.time('Select POI List');
     // const user = await app.mysql.select(TABLE);
@@ -35,6 +25,7 @@ export default class POI extends Service {
       longitude < ${geo[0]} AND 
       latitude > ${geo[3]} AND
       latitude < ${geo[2]}
+      LIMIT 0, 10000
     `;
     // LIMIT 0, 2000
 
@@ -45,8 +36,7 @@ export default class POI extends Service {
 
     // LIMIT 0,5000
     const pois:POIItem[] = await app.mysql.query(sql);
-    console.log('POI length: ', pois.length);
-    // console.log(pois[0])
+    this.logger.info('POI length: ', pois.length);
     console.timeEnd('Select POI List');
     return pois;
   }

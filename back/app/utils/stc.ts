@@ -224,16 +224,16 @@ function query({ cube, geoParams, timeParams, boolOp = BoolOperate.Intersection 
   const filteredCellsArr: CubeCell[][] = [];
   if (geoParams) {
     filteredCells = _filterInGeo(cube.cells, cube.config, geoParams);
-    console.log('_filterInGeo', filteredCells.length);
+    // console.log('_filterInGeo', filteredCells.length);
     filteredCellsArr.push(filteredCells);
   }
   if (timeParams) {
     filteredCells = _filterInTime(cube.cells, timeParams);
-    console.log('_filterInTime', filteredCells.length);
+    // console.log('_filterInTime', filteredCells.length);
     filteredCellsArr.push(filteredCells);
   }
 
-  console.log('布尔操作 ', filteredCellsArr[0]?.length, filteredCellsArr[1]?.length, boolOp);
+
   let boolResult = [];
   if (boolOp === BoolOperate.Union) {
     // https://lodash.com/docs/4.17.15#union
@@ -244,7 +244,7 @@ function query({ cube, geoParams, timeParams, boolOp = BoolOperate.Intersection 
     boolResult = _.intersectionBy(filteredCellsArr[0], filteredCellsArr[1], 'id');
   }
   cube.cellsInFilter = boolResult;
-  console.log('布尔操作后返回单元数 ', cube.cellsInFilter.length);
+  console.log('布尔操作 ', " geo:", filteredCellsArr[0]?.length, " time:", filteredCellsArr[1]?.length, boolOp, " 最后返回:", cube.cellsInFilter.length);
 }
 
 export {

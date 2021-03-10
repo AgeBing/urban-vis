@@ -4,16 +4,11 @@ import { SpaceTimeParam } from '@type/base';
 import { DEFAULT_GEO, DEFAULT_TIME } from '../utils/stc'
 
 export default class WeiboController extends Controller {
-  // public async index() {
-  //   const { ctx } = this;
-  //   this.logger.info('获取微博数据...')
-  //   let res:WeiboItem[] = await ctx.service.weibo.list();
-  //   ctx.body = res
-  // }
+
   public async query() {
     const { ctx } = this;
     this.logger.info('查询微博数据...');
-    const {  } = ctx.request.body;
+    // 设置默认条件
     const { geo = DEFAULT_GEO, time = DEFAULT_TIME, keyword } = ctx.request.body;
     let param: SpaceTimeParam | null = null;
     if (geo || time) {
@@ -21,10 +16,6 @@ export default class WeiboController extends Controller {
         geo, time,
       };
     }
-    // param = {
-    //   "geo": [120.707524, 120.623029, 28.027669, 27.988246],
-    //     "time": ["01:06:33", "03:12:56"],
-    // }
     const res:WeiboItem[] = await ctx.service.weibo.query(param, keyword);
     console.log(res.length);
     ctx.body = res;

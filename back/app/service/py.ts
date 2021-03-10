@@ -63,13 +63,6 @@ export default class Py extends Service {
     // 0. 设置默认条件
     const { geo, time } = ctx.request.body;
     console.log(geo, time)
-    // if (!geo && !time) { // 两个都为空时
-    //   ctx.request.body = {
-    //     geo: [ 120.707524, 120.623029, 28.027669, 27.988246 ],
-    //     time: [ '01:06:33', '03:12:56' ],
-    //   };
-    //   this.logger.info('设置默认条件', ctx.request.body);
-    // }
 
     // 1. 首先将时空条件转换成立方体单元条件
     //   1.1 得到符合查询条件的 立方体单元 列表
@@ -77,10 +70,9 @@ export default class Py extends Service {
     const cells = await stcService.queryCellsInRange();
     const cellsId = cells.map(c => c.id.toString());
 
-
     // 2. 获取数据列表
     const weibos:WeiboItem[] = await this.service.weibo.list();
-    console.log('整体 weibo 数据量', weibos.length);
+    this.logger.info('整体 weibo 数据量', weibos.length);
 
     // 3. 数据过滤并返回索引信息
     const ps = weibos.map(async (weibo:WeiboItem) => {

@@ -23,6 +23,7 @@ export default class Weibo extends Service {
    */
   public async query(param: SpaceTimeParam | null, keyword: string| null) : Promise<WeiboItem []> {
     console.time('Select Weibo List');
+
     const list: WeiboItem[] = await this.list();
     if (!param && !keyword) return list;
 
@@ -48,7 +49,7 @@ export default class Weibo extends Service {
         return (content.indexOf(keyword) != -1 || name.indexOf(keyword) != -1);
       });
     }
-    console.log('Weibo Length', filterList.length);
+    this.logger.info('Query weibo Length', filterList.length);
     console.timeEnd('Select Weibo List');
     return filterList;
   }

@@ -61,7 +61,7 @@ export default class STC extends Service {
       *  time: ["00:06:33", "00:12:56"]
      */
     const { geo, time, boolOp = BoolOperate['Intersection'] } = ctx.request.body;
-    console.log("queryCellsInRange", geo, time)
+    this.logger.info("queryCellsInRange", "geo: ", geo, " time :", time)
     let geoParams: GeoParams | null = null,
       timeParams:TimeParams | null = null;
 
@@ -83,8 +83,6 @@ export default class STC extends Service {
         MaxTime: timeToSliceIndex(maxTime, timeInterval),
       };
     }
-
-    console.log('query', geoParams, timeParams);
     query({ cube, geoParams, timeParams, boolOp });
 
     console.timeEnd('queryCellsInRange');
