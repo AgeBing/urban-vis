@@ -38,16 +38,19 @@ export default class PyController extends Controller {
   public async query() {
     const { ctx } = this;
     const { source, attr } = ctx.request.body;
-    this.logger.info('Python 端数据查询...');
     this.logger.info('Python 端数据查询...', ctx.request.body);
-
 
     // 条件转换
     if (attr) {
       let { S: geo, T: time } = attr;
       if(!geo)  geo = DEFAULT_GEO
       if(!time) time = DEFAULT_TIME
-      ctx.request.body = Object.assign(ctx.request.body, { geo, time });
+      ctx.request.body = { geo, time }
+    }else{
+      ctx.request.body = {
+        geo: DEFAULT_GEO,
+        time: DEFAULT_TIME
+      }
     }
 
     let res = [];
@@ -69,6 +72,34 @@ export default class PyController extends Controller {
     // res = res.slice(0, 100)
     this.logger.info('删减后数据条数', res.length);
     ctx.body = res;
+  }
+
+  // // 原先条件的转发
+  public async transfer(){
+    const { ctx } = this
+    const { geo, time } = ctx.request.body
+    let source:DS
+    switch(ctx.originalUrl){
+      case '/taxi':
+        source = DS['TaxiTraj']
+        break
+      case '/phone':
+        source = DS['MobileTraj']
+        break
+      case '/weibo':
+        source = DS['Weibo']
+        break
+      case '/poi':
+        source = DS['Poi']
+        break
+      default:
+        source = DS['Poi']
+    }
+    ctx.request.body = {
+      source,
+      attr: { S:geo, T:time }
+    }
+    await this.query()
   }
 }
 

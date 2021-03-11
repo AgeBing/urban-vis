@@ -1,4 +1,5 @@
 import { Application } from 'egg';
+
 export default (app: Application) => {
   const { controller, router } = app;
 
@@ -8,14 +9,17 @@ export default (app: Application) => {
 
   // 数据接口
   router.get('/taxi', controller.taxi.query);
-  router.post('/taxi', controller.taxi.query);
   router.get('/phone', controller.phone.query);
-  router.post('/phone', controller.phone.query);
-  // router.get('/weibo', controller.weibo.index);
-  router.post('/weibo', controller.weibo.query);
-  router.get('/poi', controller.poi.index);
-  router.post('/poi', controller.poi.query);
-  // router.get('/stc', controller.taxi.query);
+  // router.post('/taxi', controller.taxi.query);
+  // router.post('/phone', controller.phone.query);
+  // router.post('/weibo', controller.weibo.query);
+  // router.post('/poi', controller.poi.query);
+
+  router.post('/taxi',  controller.py.transfer);
+  router.post('/phone', controller.py.transfer);
+  router.post('/weibo', controller.py.transfer);
+  router.post('/poi',   controller.py.transfer);
+
 
   // Python 后端的接口
   router.post('/py/query', controller.py.query);
