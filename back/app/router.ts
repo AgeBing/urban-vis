@@ -10,15 +10,16 @@ export default (app: Application) => {
   // 数据接口
   router.get('/taxi', controller.taxi.query);
   router.get('/phone', controller.phone.query);
+
   // router.post('/taxi', controller.taxi.query);
   // router.post('/phone', controller.phone.query);
   // router.post('/weibo', controller.weibo.query);
   // router.post('/poi', controller.poi.query);
 
-  router.post('/taxi',  controller.py.transfer);
-  router.post('/phone', controller.py.transfer);
-  router.post('/weibo', controller.py.transfer);
-  router.post('/poi',   controller.py.transfer);
+  router.post('/taxi',  controller.detail.transfer);
+  router.post('/phone', controller.detail.transfer);
+  router.post('/weibo', controller.detail.transfer);
+  router.post('/poi',   controller.detail.transfer);
 
 
   // Python 后端的接口

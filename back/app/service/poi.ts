@@ -1,5 +1,6 @@
 import { Service } from 'egg';
 import { POIItem } from '@type/poi';
+import { geoToCubeIndex } from '../utils/stc';
 
 const TABLE = 'poi_in_city_range';
 
@@ -43,5 +44,30 @@ export default class POI extends Service {
     this.logger.info('POI length: ', pois.length);
     console.timeEnd('Select POI List');
     return pois;
+  }
+
+  public async queryPOIBySTC():Promise<POIItem[]>{
+    const { ctx } = this;
+    let { keyword } = ctx.request.body;
+    const stcService = ctx.service.stc;
+    const cells = await stcService.queryCellsInRange();
+    const cellsId = cells.map(c => c.id.toString());
+
+    // 2. 获取数据列表
+    const pois:POIItem[] = await this.list(undefined, keyword);
+    const poisInRange:POIItem[] = []
+    
+    // 3. 数据过滤并返回索引信息
+    const ps = pois.map(async (poi:POIItem) => {
+      const { longitude, latitude } = poi;
+      const cubeId = (await geoToCubeIndex({ longitude, latitude })).toString();
+
+      if (cellsId.indexOf(cubeId) !== -1) {
+        poisInRange.push(poi)
+      }
+    });
+
+    await Promise.all(ps)
+    return poisInRange
   }
 }

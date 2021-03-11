@@ -75,34 +75,6 @@ export default class PyController extends Controller {
     ctx.body = res;
   }
 
-  // // 原先条件的转发
-  public async transfer(){
-    const { ctx } = this
-    const { geo, time, keyword } = ctx.request.body
-    let source:DS
-    switch(ctx.originalUrl){
-      case '/taxi':
-        source = DS['TaxiTraj']
-        break
-      case '/phone':
-        source = DS['MobileTraj']
-        break
-      case '/weibo':
-        source = DS['Weibo']
-        break
-      case '/poi':
-        source = DS['Poi']
-        break
-      default:
-        source = DS['Poi']
-    }
-    ctx.request.body = {
-      source,
-      attr: { S:geo, T:time },
-      keyword
-    }
-    await this.query()
-  }
 }
 
 

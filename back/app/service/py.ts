@@ -1,5 +1,5 @@
 import { Service } from 'egg';
-import { DS, BoolOperate } from '@type/base';
+import { DS } from '@type/base';
 import { queryRes } from '../controller/py';
 import { WeiboItem } from '@type/weibo';
 import { POIItem } from '@type/poi';
@@ -56,25 +56,10 @@ export default class Py extends Service {
    */
   public async pyQueryWeibo():Promise<queryRes> {
     const { ctx } = this;
-    this.logger.info('py 查询 weibo 数据...');
-    this.logger.info('输入条件: ', ctx.request.body);
 
+    const weibos = await ctx.service.weibo.queryWeiboBySTC()
 
-    // 0. 设置默认条件
-    const { geo, time, keyword } = ctx.request.body;
-    console.log(geo, time)
-
-    // 1. 首先将时空条件转换成立方体单元条件
-    //   1.1 得到符合查询条件的 立方体单元 列表
-    const stcService = ctx.service.stc;
-    const cells = await stcService.queryCellsInRange();
-    const cellsId = cells.map(c => c.id.toString());
-
-    // 2. 获取数据列表
-    const weibos:WeiboItem[] = await this.service.weibo.queryByKeyword(keyword);
-    this.logger.info('整体 weibo 数据量', weibos.length);
-
-    // 3. 数据过滤并返回索引信息
+    // 返回索引信息
     const ps = weibos.map(async (weibo:WeiboItem) => {
       const { time, lat, lng, id } = weibo;
       const cellId = await pointToCubeIndex({
@@ -82,9 +67,6 @@ export default class Py extends Service {
         longitude: lng,
         latitude: lat,
       });
-
-      // 数据点不在查询范围内
-      if (cellsId.indexOf(cellId) === -1) { return undefined; }
 
       // 数据点不在 STC config 范围内
       const bbx = await getCubeCellBbx(cellId);
@@ -103,40 +85,13 @@ export default class Py extends Service {
 
   public async pyQueryPOI():Promise<queryRes> {
     const { ctx } = this;
-    this.logger.info('py 查询 poi 数据...');
-    // this.logger.info('输入条件: ', ctx.request.body)
 
-    // 0. 设置默认条件
-    let { geo, keyword } = ctx.request.body;
-
-    // if (!geo) {
-    //   geo = [ 120.707524, 120.623029, 28.027669, 27.988246 ];
-    //   this.logger.info('设置默认条件', geo);
-    // }
-    ctx.request.body = {
-      // time 需要过滤掉时间属性
-      geo,
-      boolOp: BoolOperate['Union']
-    };
-
-
-    // 1. 首先将时空条件转换成立方体单元条件
-    //   1.1 得到符合查询条件的 立方体单元 列表
-    const stcService = ctx.service.stc;
-    const cells = await stcService.queryCellsInRange();
-    const cellsId = cells.map(c => c.id.toString());
-
-    // 2. 获取数据列表
-    const pois:POIItem[] = await this.service.poi.list(undefined, keyword);
-
+    const pois = await ctx.service.poi.queryPOIBySTC()
 
     // 3. 数据过滤并返回索引信息
     const ps = pois.map(async (poi:POIItem) => {
       const { longitude, latitude, id } = poi;
       const cubeId = (await geoToCubeIndex({ longitude, latitude })).toString();
-
-      if (cellsId.indexOf(cubeId) === -1) { return undefined; }
-
       const bbx = await getCubeCellBbx(cubeId);
       if (!bbx) { return undefined; }
       /**

@@ -2,6 +2,7 @@ import { Service } from 'egg';
 import { WeiboItem } from '@type/weibo';
 import { SpaceTimeParam, Point } from '@type/base';
 import { isPointWithinRect, isPointWithinInterval } from '../utils/math';
+import { pointToCubeIndex} from '../utils/stc';
 
 const fileUtil = require('../utils/file');
 const PATH = 'weibo.json';
@@ -63,5 +64,37 @@ export default class Weibo extends Service {
     this.logger.info('Query weibo Length', filterList.length);
     console.timeEnd('Select Weibo List');
     return filterList;
+  }
+
+
+  public async queryWeiboBySTC():Promise<WeiboItem[]> {
+    const { ctx } = this;
+    const { keyword } = ctx.request.body;
+
+    // 1. 首先将时空条件转换成立方体单元条件
+    //   1.1 得到符合查询条件的 立方体单元 列表
+    const stcService = ctx.service.stc;
+    const cells = await stcService.queryCellsInRange();
+    const cellsId = cells.map(c => c.id.toString());
+
+    // 2. 获取数据列表
+    const weibos:WeiboItem[] = await this.queryByKeyword(keyword);
+    this.logger.info('整体 weibo 数据量', weibos.length);
+
+    // 过滤是否在时空立方体内
+    const weiboInRange:WeiboItem[] = []
+    const ps = weibos.map(async (weibo:WeiboItem) => {
+      const { time, lat, lng } = weibo;
+      const cellId = await pointToCubeIndex({
+        time,
+        longitude: lng,
+        latitude: lat,
+      });
+      if (cellsId.indexOf(cellId) !== -1) {
+        weiboInRange.push(weibo)
+      }
+    })
+    await Promise.all(ps)
+    return weiboInRange
   }
 }
