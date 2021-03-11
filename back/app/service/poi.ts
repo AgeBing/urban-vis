@@ -1,8 +1,13 @@
 import { Service } from 'egg';
 import { POIItem } from '@type/poi';
 
-const TABLE = 'poi';
+const TABLE = 'poi_in_city_range';
 
+/**
+CREATE TABLE poi_in_city_range AS SELECT *  FROM poi 
+WHERE longitude < 120.747524 AND longitude > 120.593029 AND latitude < 28.027669 AND latitude > 27.958246 
+ORDER BY RAND() LIMIT 1, 5000
+*/
 
 import { DEFAULT_GEO } from '../utils/stc'
 /**
@@ -25,7 +30,6 @@ export default class POI extends Service {
       longitude < ${geo[0]} AND 
       latitude > ${geo[3]} AND
       latitude < ${geo[2]}
-      LIMIT 0, 10000
     `;
     // LIMIT 0, 2000
 

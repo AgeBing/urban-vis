@@ -71,8 +71,8 @@ function timeToSliceIndex(time: string, interval:number) {
 }
 
 // "2014-02-12 00:06" ->  6/interval
-function dateTimeToSliceIndex(time: string, interval:number) {
-  const a = moment(time);
+function dateTimeToSliceIndex(time: string, interval:number) {   
+  const a = moment(time, 'YYYY-MM-DD HH:mm');
   const m = a.hour() * 60 + a.minute();
   return Math.floor(Number(m) / interval);
 }
