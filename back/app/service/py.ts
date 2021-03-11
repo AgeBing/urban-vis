@@ -61,7 +61,7 @@ export default class Py extends Service {
 
 
     // 0. 设置默认条件
-    const { geo, time } = ctx.request.body;
+    const { geo, time, keyword } = ctx.request.body;
     console.log(geo, time)
 
     // 1. 首先将时空条件转换成立方体单元条件
@@ -71,7 +71,7 @@ export default class Py extends Service {
     const cellsId = cells.map(c => c.id.toString());
 
     // 2. 获取数据列表
-    const weibos:WeiboItem[] = await this.service.weibo.list();
+    const weibos:WeiboItem[] = await this.service.weibo.queryByKeyword(keyword);
     this.logger.info('整体 weibo 数据量', weibos.length);
 
     // 3. 数据过滤并返回索引信息
@@ -107,7 +107,7 @@ export default class Py extends Service {
     // this.logger.info('输入条件: ', ctx.request.body)
 
     // 0. 设置默认条件
-    let { geo } = ctx.request.body;
+    let { geo, keyword } = ctx.request.body;
 
     // if (!geo) {
     //   geo = [ 120.707524, 120.623029, 28.027669, 27.988246 ];
@@ -127,7 +127,7 @@ export default class Py extends Service {
     const cellsId = cells.map(c => c.id.toString());
 
     // 2. 获取数据列表
-    const pois:POIItem[] = await this.service.poi.list(undefined, null);
+    const pois:POIItem[] = await this.service.poi.list(undefined, keyword);
 
 
     // 3. 数据过滤并返回索引信息

@@ -18,6 +18,17 @@ export default class Weibo extends Service {
     return await fileUtil.readJson(PATH);
   }
 
+  public async queryByKeyword(keyword:string):Promise<WeiboItem []> {
+    let filterList:WeiboItem[] = await this.list()
+    if(keyword){
+      filterList = filterList.filter((weibo:WeiboItem) => {
+        const { name, content } = weibo;
+        return (content.indexOf(keyword) != -1 || name.indexOf(keyword) != -1);
+      });
+    }
+    return filterList
+  }
+
   /**
    * 按条件查询
    */

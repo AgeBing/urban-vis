@@ -39,6 +39,16 @@ describe('test/app/controller/poi.test.ts', () => {
   });
 
 
+  it('POST /poi keyword', async () => {
+    const res = await app.httpRequest()
+      .post('/poi')
+      .send({
+        keyword: '医院'
+      })
+      .expect(200)
+    assert(hasItem(res))
+  });
+
   it('POST /poi/py 无条件', async () => {
     const condition = {
       source: 3,

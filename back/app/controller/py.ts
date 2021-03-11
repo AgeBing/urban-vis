@@ -37,7 +37,7 @@ const sweibo = Symbol();
 export default class PyController extends Controller {
   public async query() {
     const { ctx } = this;
-    const { source, attr } = ctx.request.body;
+    const { source, attr, keyword } = ctx.request.body;
     this.logger.info('Python 端数据查询...', ctx.request.body);
 
     // 条件转换
@@ -45,11 +45,12 @@ export default class PyController extends Controller {
       let { S: geo, T: time } = attr;
       if(!geo)  geo = DEFAULT_GEO
       if(!time) time = DEFAULT_TIME
-      ctx.request.body = { geo, time }
+      ctx.request.body = { geo, time, keyword }
     }else{
       ctx.request.body = {
         geo: DEFAULT_GEO,
-        time: DEFAULT_TIME
+        time: DEFAULT_TIME,
+        keyword
       }
     }
 
@@ -77,7 +78,7 @@ export default class PyController extends Controller {
   // // 原先条件的转发
   public async transfer(){
     const { ctx } = this
-    const { geo, time } = ctx.request.body
+    const { geo, time, keyword } = ctx.request.body
     let source:DS
     switch(ctx.originalUrl){
       case '/taxi':
@@ -97,7 +98,8 @@ export default class PyController extends Controller {
     }
     ctx.request.body = {
       source,
-      attr: { S:geo, T:time }
+      attr: { S:geo, T:time },
+      keyword
     }
     await this.query()
   }

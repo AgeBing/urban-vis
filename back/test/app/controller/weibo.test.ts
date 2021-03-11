@@ -48,6 +48,15 @@ describe('test/app/controller/weibo.test.ts', () => {
     assert(hasItem(res))
   });
 
+  it('POST /weibo keyword', async () => {
+    const res = await app.httpRequest()
+      .post('/weibo')
+      .send({
+        keyword: '丢失'
+      })
+      .expect(200)
+    assert(hasItem(res))
+  });
 
   it('POST /weibo/py 无条件', async () => {
     const condition = {
