@@ -51,7 +51,8 @@ async function loadCube(): Promise<Cube> {
       cellsInFilter: [],
     };
     cubeInstance = cube;
-    console.log('STC Cube Loaded~');
+    console.log('STC Cube Loaded ~ ');
+    console.log('STC Config ', config);
   }
   return cubeInstance;
 }

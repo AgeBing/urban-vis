@@ -18,17 +18,6 @@ export default class Py extends Service {
     this.logger.info('py 查询时空数据...');
     this.logger.info('输入条件: ', ctx.request.body);
 
-    // 1. 设置默认条件
-    // const { geo, time } = ctx.request.body;
-    // if (!geo && !time) { // 两个都为空时
-    //   ctx.request.body = {
-    //     geo: [ 120.707524, 120.623029, 28.027669, 27.988246 ],
-    //     time: [ '01:06:33', '03:12:56' ],
-    //   };
-    //   this.logger.info('设置默认条件', ctx.request.body);
-    // }
-
-
     //  2. 得到符合查询条件的 立方体单元 列表
     const stcService = ctx.service.stc;
     const cells = await stcService.queryCellsInRange();
