@@ -42,11 +42,12 @@ export default class DetailController extends Controller {
 
   public async queryPOI(){
     const { ctx } = this
-    let { geo } = ctx.request.body;
+    let { geo, keyword } = ctx.request.body;
     ctx.request.body = {
       // time 需要过滤掉时间属性
       geo,
-      boolOp: BoolOperate['Union']
+      boolOp: BoolOperate['Union'],
+      keyword
     };
 
     this.logger.info(`查询数据源 ${DataSource['Poi']},条件`,ctx.request.body);
@@ -87,9 +88,6 @@ export default class DetailController extends Controller {
     ctx.request.body = Object.assign(ctx.request.body,{
       source,keyword,geo,time
     })
-    if(keyword){
-      ctx.request.body['keyword'] = keyword
-    }
     let res = await func.call(this)
     return res
   }
