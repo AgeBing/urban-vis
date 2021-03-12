@@ -1,9 +1,9 @@
 import { Service } from 'egg';
 import { Cube, CubeCell, GeoParams, TimeParams, STCDataItem } from '@type/cube';
-import { BoolOperate, DS, Point } from '@type/base';
+import { BoolOperate, DS, Point, QueryDataByMode } from '@type/base';
 import { query, loadCube, timeToSliceIndex } from '../utils/stc';
-
-import { queryRes } from '../controller/py';
+import { DEFAULT_GEO, DEFAULT_TIME } from '../utils/stc'
+import { queryRes, queryResItem } from '../controller/py';
 import { timeFormat1 } from '../utils/math';
 
 const fileUtil = require('../utils/file');
@@ -227,5 +227,24 @@ export default class STC extends Service {
     return res;
   }
 
+  // 根据 STC Info 和 Mode 计算信息
+  public async getCellsFromInfo(info: queryResItem, mode=QueryDataByMode['STCubes']): Promise<string[]>{
+    let cellIds:string[] = []
+    if(mode === QueryDataByMode['STCubes']){
+      cellIds = info?.stcubes || []
+      return cellIds
+    }
 
+    let geo = DEFAULT_GEO,
+        time = DEFAULT_TIME
+    if(mode === QueryDataByMode['Geo']){
+      geo = info?.bbx?.areaRange || DEFAULT_GEO
+    }else if(mode === QueryDataByMode['Time']){
+      time = info?.bbx?.timeRange || DEFAULT_TIME
+    } 
+    this.ctx.body = { geo, time, boolOp:BoolOperate['Intersection']}
+    let cells:CubeCell[] = await this.queryCellsInRange()
+    cellIds = cells.map(c => c.id.toString())
+    return cellIds
+  }
 }

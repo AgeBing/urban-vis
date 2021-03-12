@@ -1,6 +1,6 @@
 import { Service } from 'egg';
 import { DS } from '@type/base';
-import { queryRes } from '../controller/py';
+import { queryRes, queryResItem } from '../controller/py';
 import { WeiboItem } from '@type/weibo';
 import { POIItem } from '@type/poi';
 import { pointToCubeIndex, getCubeCellBbx } from '../utils/stc';
@@ -71,6 +71,30 @@ export default class Py extends Service {
     return (await Promise.all(ps)).filter(x => x);
   }
 
+  public async pyQueryWeibosInfo(weibos:WeiboItem[]):Promise<queryRes> {
+    // 返回索引信息
+    const ps = weibos.map(async (weibo:WeiboItem) => {
+      const { time, lat, lng, id } = weibo;
+      const cellId = await pointToCubeIndex({
+        time,
+        longitude: lng,
+        latitude: lat,
+      });
+
+      // 数据点不在 STC config 范围内
+      const bbx = await getCubeCellBbx(cellId);
+      if (!bbx) return undefined;
+
+      return {
+        id,
+        stcubes: [ cellId ],
+        bbx,
+      };
+    });
+
+    return (await Promise.all(ps)).filter(x => x);
+  }
+
 
   public async pyQueryPOI():Promise<queryRes> {
     const { ctx } = this;
@@ -100,4 +124,69 @@ export default class Py extends Service {
     return (await Promise.all(ps)).filter(x => x);
   }
 
+
+  public async pyQueryPoisInfo(pois:POIItem[]):Promise<queryRes> {
+    // 数据过滤并返回索引信息
+    const ps = pois.map(async (poi:POIItem) => {
+      const { longitude, latitude, id } = poi;
+      const cubeId = (await geoToCubeIndex({ longitude, latitude })).toString();
+      const bbx = await getCubeCellBbx(cubeId);
+      if (!bbx) { return undefined; }
+      /**
+        cube 第 0 层， 时间为 0
+          "timeRange": [
+              "00:00:00",
+              "00:10:00"
+          ],
+       */
+      return {
+        id,
+        stcubes: [ cubeId ],
+        bbx,
+      };
+    });
+
+    return (await Promise.all(ps)).filter(x => x);
+  }
+
+  public async queryPOIBoxInfoById(id:string): Promise<queryResItem>{
+    const poi:POIItem | null  = await this.ctx.service.poi.queryById(id)
+    if(!poi) return null
+    let { longitude, latitude } = poi
+    const cubeId = (await geoToCubeIndex({ longitude, latitude })).toString();
+    const bbx = await getCubeCellBbx(cubeId);
+    if (!bbx) { return undefined; }
+    /**
+      cube 第 0 层， 时间为 0
+        "timeRange": [
+            "00:00:00",
+            "00:10:00"
+        ],
+    */
+    return {
+      id,
+      stcubes: [ cubeId ],
+      bbx,
+    };
+  }
+  public async queryWeiboBoxInfoById(id:string): Promise<queryResItem>{
+    const weibo:WeiboItem | null  = await this.ctx.service.weibo.queryById(id)
+    if(!weibo) return null
+    const { time, lat, lng } = weibo;
+    const cellId = await pointToCubeIndex({
+      time,
+      longitude: lng,
+      latitude: lat,
+    });
+
+    // 数据点不在 STC config 范围内
+    const bbx = await getCubeCellBbx(cellId);
+    if (!bbx) return undefined;
+
+    return {
+      id,
+      stcubes: [ cellId ],
+      bbx,
+    };
+  }
 }

@@ -24,8 +24,7 @@ export default (app: Application) => {
 
   // Python 后端的接口
   router.post('/py/query', controller.py.query);
-  // router.post('/py/queryId', controller.py.getOneData);
-  // router.post('/py/box`', controller.py.isOneDataInBBox);
+  router.post('/py/queryByDataId', controller.py.queryByDataId);
 
   // 用于 Case 展示
   // router.get('/case/taxi', controller.case.taxi);

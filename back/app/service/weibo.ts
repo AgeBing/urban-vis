@@ -97,4 +97,36 @@ export default class Weibo extends Service {
     await Promise.all(ps)
     return weiboInRange
   }
+
+  public async queryWeiboByCellsId(cellsId:string[], keyword = ''):Promise<WeiboItem[]> {
+
+    // 获取数据列表
+    const weibos:WeiboItem[] = await this.queryByKeyword(keyword);
+    this.logger.info('整体 weibo 数据量', weibos.length);
+
+    // 过滤是否在时空立方体内
+    const weiboInRange:WeiboItem[] = []
+    const ps = weibos.map(async (weibo:WeiboItem) => {
+      const { time, lat, lng } = weibo;
+      const cellId = await pointToCubeIndex({
+        time,
+        longitude: lng,
+        latitude: lat,
+      });
+      if (cellsId.indexOf(cellId) !== -1) {
+        weiboInRange.push(weibo)
+      }
+    })
+    await Promise.all(ps)
+    return weiboInRange
+  }
+
+  public async queryById(id:string):Promise<WeiboItem|null>{
+    const weibos = await this.list()
+    for(let i = 0;i < weibos.length;i++){
+      if(weibos[i].id === id)
+        return weibos[i]
+    }
+    return null
+  }
 }

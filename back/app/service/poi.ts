@@ -70,4 +70,31 @@ export default class POI extends Service {
     await Promise.all(ps)
     return poisInRange
   }
+
+  public async queryById(id:string): Promise<POIItem|null>{
+    const pois = await this.app.mysql.select(TABLE,{ id });
+    if(Array.isArray(pois) && pois.length === 1){
+      return pois[0]
+    }else{
+      return null
+    }
+  }
+
+  public async queryPOIByCellsId(cellsId:string[],keyword=null):Promise<POIItem[]>{
+    const pois:POIItem[] = await this.list(undefined, keyword);
+    const poisInRange:POIItem[] = []
+    
+    // 3. 数据过滤并返回索引信息
+    const ps = pois.map(async (poi:POIItem) => {
+      const { longitude, latitude } = poi;
+      const cubeId = (await geoToCubeIndex({ longitude, latitude })).toString();
+
+      if (cellsId.indexOf(cubeId) !== -1) {
+        poisInRange.push(poi)
+      }
+    });
+
+    await Promise.all(ps)
+    return poisInRange
+  }
 }
