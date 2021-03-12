@@ -14,6 +14,15 @@ const GEO = [
   [120.66970825195312, 120.66558837890626, 28.004708077581746, 28.00137367569477],
 ]
 
+
+const DATA_IDS_Taxi = [ // 1
+  "浙C04658.LOG", 
+]
+const DATA_IDS_Weibo = [  // 2
+  "ee729804-7da1-11eb-9c38",   // weibo 2
+]
+
 export {
-  TIME, GEO
+  TIME, GEO,
+  DATA_IDS_Taxi, DATA_IDS_Weibo
 }

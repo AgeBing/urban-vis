@@ -83,6 +83,9 @@ export default class POI extends Service {
   public async queryPOIByCellsId(cellsId:string[],keyword=null):Promise<POIItem[]>{
     const pois:POIItem[] = await this.list(undefined, keyword);
     const poisInRange:POIItem[] = []
+
+    this.logger.info('传入 cells 数量', cellsId);
+    this.logger.info('整体 poi 数据量', pois.length);
     
     // 3. 数据过滤并返回索引信息
     const ps = pois.map(async (poi:POIItem) => {
@@ -93,7 +96,7 @@ export default class POI extends Service {
         poisInRange.push(poi)
       }
     });
-
+    this.logger.info('在 cells 里的 poi 数据量', poisInRange.length);
     await Promise.all(ps)
     return poisInRange
   }

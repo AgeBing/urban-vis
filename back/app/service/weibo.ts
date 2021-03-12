@@ -102,6 +102,7 @@ export default class Weibo extends Service {
 
     // 获取数据列表
     const weibos:WeiboItem[] = await this.queryByKeyword(keyword);
+    this.logger.info('传入 cells 数量', cellsId);
     this.logger.info('整体 weibo 数据量', weibos.length);
 
     // 过滤是否在时空立方体内
@@ -117,6 +118,7 @@ export default class Weibo extends Service {
         weiboInRange.push(weibo)
       }
     })
+    this.logger.info('在 cells 里的 weibo 数据量', weiboInRange.length);
     await Promise.all(ps)
     return weiboInRange
   }

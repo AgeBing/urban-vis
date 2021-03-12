@@ -118,6 +118,7 @@ export default class PyController extends Controller {
       ctx.body = []
       return
     }
+    console.log("cells len:", cellIds.length)
     
     // 2. 根据 cellIds 去数据源中获取数据，返回
     if(ts === DS['MobileTraj'] || ts === DS['TaxiTraj']){
@@ -125,9 +126,11 @@ export default class PyController extends Controller {
       res = await ctx.service.stc.getSTCInfoOfDatas(dataIds, ts)
     }else if(ts === DS['Poi']){
       let pois:POIItem[] = await ctx.service.poi.queryPOIByCellsId(cellIds)
+      console.log("pois len",pois.length)
       res = await ctx.service.py.pyQueryPoisInfo(pois)
     }else if(ts === DS['Weibo']){
       let weibos = await ctx.service.weibo.queryWeiboByCellsId(cellIds)
+      console.log("weibo len",weibos.length)
       res = await ctx.service.py.pyQueryWeibosInfo(weibos)
     }
     this.logger.info('Python queryByDataId 返回数据条数', res.length);

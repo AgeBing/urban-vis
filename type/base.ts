@@ -33,6 +33,12 @@ export const enum DS{
   Poi = 3,
 }
 
+export const enum QueryDataByMode {
+  STCubes = 0,
+  Time = 1,
+  Geo = 2
+}
+
 export interface SpaceTimeParam {
   geo?: GeoParam,
   time?: TimeParam

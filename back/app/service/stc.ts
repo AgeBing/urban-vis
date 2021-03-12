@@ -237,12 +237,14 @@ export default class STC extends Service {
 
     let geo = DEFAULT_GEO,
         time = DEFAULT_TIME
+    console.log(info?.bbx)
     if(mode === QueryDataByMode['Geo']){
       geo = info?.bbx?.areaRange || DEFAULT_GEO
     }else if(mode === QueryDataByMode['Time']){
       time = info?.bbx?.timeRange || DEFAULT_TIME
     } 
-    this.ctx.body = { geo, time, boolOp:BoolOperate['Intersection']}
+    console.log(geo,time)
+    this.ctx.request.body = { geo, time, boolOp:BoolOperate['Intersection']}
     let cells:CubeCell[] = await this.queryCellsInRange()
     cellIds = cells.map(c => c.id.toString())
     return cellIds
