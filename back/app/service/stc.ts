@@ -135,7 +135,7 @@ export default class STC extends Service {
 
     Object.keys(data).map(cellId => {
       // 过滤 data，返回 cell 内的轨迹数据
-      if (!cellsId.includes(cellId)) delete data[cellId];
+      if (!cellsId.includes(cellId)){}
       else {
         // 将处于不同cell内的轨迹片段合并
         datasIncell = data[cellId];
