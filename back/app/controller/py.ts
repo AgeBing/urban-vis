@@ -1,7 +1,10 @@
 import { Controller } from 'egg';
-import { DS } from '@type/base';
+import { DS, Traj } from '@type/base';
 import { DEFAULT_GEO, DEFAULT_TIME } from '../utils/stc'
 import { POIItem } from '@type/poi';
+import { STCData, STCDataItem } from '@type/cube';
+import { WeiboItem } from '@type/weibo';
+
 /**
  * 字段格式定义
  */
@@ -76,18 +79,13 @@ export default class PyController extends Controller {
     ctx.body = res;
   }
 
-  public async queryByDataId(){
-    const { ctx } = this
-    const { originSource:os, targetSource:ts, id, mode } = ctx.request.body
-    this.logger.info('Python queryByDataId...', ctx.request.body);
-    if(os === undefined || ts === undefined || id === undefined){
-      this.logger.error('传参不完整！')
-      ctx.body = []
-      return
-    }
 
-    let res:queryRes = [],
-        info:queryResItem|null,
+  public async queryCellsByDataId(){
+    const { ctx } = this
+    const { originSource:os, id, mode } = ctx.request.body
+    this.logger.info('Python queryByDataId...', ctx.request.body);
+
+    let info:queryResItem|null,
         cellIds:string[] = []    
     
     // 1. 通过 mode 和 id 获取数据查询条件，返回 cellIds 
@@ -107,19 +105,38 @@ export default class PyController extends Controller {
 
     if(!info){
       this.logger.error(`无 STC 信息！`)
-      ctx.body = []
-      return
+      return []
     }
 
       // 1.2 条件转cell
     cellIds = await ctx.service.stc.getCellsFromInfo(info,mode)
     if(cellIds.length === 0){
       this.logger.error(`无对应 cell 单元`)
+      return []
+    }
+    console.log("cells len:", cellIds.length)
+    return cellIds
+  }
+
+  public async queryByDataId(){
+    const { ctx } = this
+    const { originSource:os, targetSource:ts, id } = ctx.request.body
+    this.logger.info('Python queryByDataId...', ctx.request.body);
+    if(os === undefined || ts === undefined || id === undefined){
+      this.logger.error('传参不完整！')
       ctx.body = []
       return
     }
-    console.log("cells len:", cellIds.length)
-    
+
+    let res:queryRes = [],
+        cellIds:string[] = []   
+
+    cellIds = await this.queryCellsByDataId()
+    if(cellIds.length == 0){
+      ctx.body = []
+      return
+    }
+
     // 2. 根据 cellIds 去数据源中获取数据，返回
     if(ts === DS['MobileTraj'] || ts === DS['TaxiTraj']){
       let dataIds = await ctx.service.stc.getIdsInCells(cellIds, ts)
@@ -137,6 +154,46 @@ export default class PyController extends Controller {
     ctx.body = res
   }
 
+  public async queryDetailByDataId(){
+    const { ctx } = this
+    const { originSource:os, targetSource:ts, id } = ctx.request.body
+    this.logger.info('Python queryByDataId...', ctx.request.body);
+    if(os === undefined || ts === undefined || id === undefined){
+      this.logger.error('传参不完整！')
+      ctx.body = []
+      return
+    }
+
+    let res: Traj[] | POIItem[] | WeiboItem[]= [],
+        cellIds:string[] = []   
+
+    cellIds = await this.queryCellsByDataId()
+    if(cellIds.length == 0){
+      ctx.body = []
+      return
+    }
+
+    // 2. 根据 cellIds 去数据源中获取数据，返回
+    if(ts === DS['MobileTraj'] || ts === DS['TaxiTraj']){
+        const stcDatas: STCData = await ctx.service.stc.getDatasInCells(cellIds, ts);
+        let trajs: Traj[] = [];
+        trajs = stcDatas.map((d: STCDataItem) => ({
+          id: d.id,
+          points: d.data,
+        }));
+        res = trajs
+    }else if(ts === DS['Poi']){
+      let pois:POIItem[] = await ctx.service.poi.queryPOIByCellsId(cellIds)
+      console.log("pois len",pois.length)
+      res = pois
+    }else if(ts === DS['Weibo']){
+      let weibos:WeiboItem[] = await ctx.service.weibo.queryWeiboByCellsId(cellIds)
+      console.log("weibo len",weibos.length)
+      res = weibos
+    }
+    this.logger.info('Python queryDetailByDataId 返回数据条数', res.length);
+    ctx.body = res
+  }
 }
 
 

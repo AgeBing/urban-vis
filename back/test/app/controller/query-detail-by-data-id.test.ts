@@ -12,7 +12,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "targetSource": 1,
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -26,7 +26,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "mode": 1
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -40,7 +40,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "mode": 2
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -54,7 +54,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "targetSource": 0,
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -69,7 +69,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
   //     "targetSource": 2,
   //   }
   //   const res = await app.httpRequest()
-  //     .post('/py/queryByDataId')
+  //     .post('/queryByDataId')
   //     .send(condition)
   //     .expect(200)
   //   assert(hasItem(res))
@@ -82,7 +82,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
   //     "targetSource": 3,
   //   }
   //   const res = await app.httpRequest()
-  //     .post('/py/queryByDataId')
+  //     .post('/queryByDataId')
   //     .send(condition)
   //     .expect(200)
   //   assert(hasItem(res))
@@ -96,7 +96,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "mode": 1
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -110,7 +110,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "mode": 2
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -124,7 +124,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "mode": 2
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -139,7 +139,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "targetSource": 1,
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -152,7 +152,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "targetSource": 2,
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -165,7 +165,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
       "targetSource": 0,
     }
     const res = await app.httpRequest()
-      .post('/py/queryByDataId')
+      .post('/queryByDataId')
       .send(condition)
       .expect(200)
     assert(hasItem(res))
@@ -178,7 +178,7 @@ describe('test/app/controller/queryByDataId.test.ts', () => {
 //       "targetSource": 3,
 //     }
 //     const res = await app.httpRequest()
-//       .post('/py/queryByDataId')
+//       .post('/queryByDataId')
 //       .send(condition)
 //       .expect(200)
 //     assert(hasItem(res))

@@ -20,6 +20,7 @@ export default (app: Application) => {
   router.post('/phone', controller.detail.transfer);
   router.post('/weibo', controller.detail.transfer);
   router.post('/poi',   controller.detail.transfer);
+  router.post('/queryByDataId', controller.py.queryDetailByDataId);
 
 
   // Python 后端的接口
