@@ -210,15 +210,15 @@ export default class STC extends Service {
         this.logger.error(`数据 ${id} 在 data2cube 文件中找不到索引`);
         return { id };
       }
-
+      // 原始数据内的格式
       const { timeRange: t, areaRange: a } = bbx;
 
       return {
         id,
         stcubes,
         bbx: {
-          timeRange: [ timeFormat1(t.min), timeFormat1(t.max) ],
-          areaRange: [ a.maxLng, a.minLng, a.maxLat, a.minLat ],
+          time: [ timeFormat1(t.min), timeFormat1(t.max) ],
+          geo: [ a.maxLng, a.minLng, a.maxLat, a.minLat ],
         },
       };
     });
@@ -239,9 +239,9 @@ export default class STC extends Service {
         time = DEFAULT_TIME
     console.log(info?.bbx)
     if(mode === QueryDataByMode['Geo']){
-      geo = info?.bbx?.areaRange || DEFAULT_GEO
+      geo = info?.bbx?.geo || DEFAULT_GEO
     }else if(mode === QueryDataByMode['Time']){
-      time = info?.bbx?.timeRange || DEFAULT_TIME
+      time = info?.bbx?.time || DEFAULT_TIME
     } 
     console.log(geo,time)
     this.ctx.request.body = { geo, time, boolOp:BoolOperate['Intersection']}

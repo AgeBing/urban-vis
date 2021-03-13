@@ -14,8 +14,8 @@ export type queryResItem = {
   bbx?: Bbx | null // 包围盒
 } | undefined | null;
 export interface Bbx{
-  timeRange: string[],
-  areaRange: number[]
+  time: string[],
+  geo: number[]
 }
 export interface BbxTimeRange{
   min: string,
@@ -46,7 +46,7 @@ export default class PyController extends Controller {
 
     // 条件转换
     if (attr) {
-      let { S: geo, T: time } = attr;
+      let { geo, time } = attr;
       if(!geo)  geo = DEFAULT_GEO
       if(!time) time = DEFAULT_TIME
       ctx.request.body = { geo, time, keyword }
