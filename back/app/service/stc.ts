@@ -118,7 +118,9 @@ export default class STC extends Service {
     // console.timeEnd(`getIdsInCells for`)
 
     console.timeEnd('getIdsInCells');
-    return Array.from(idArr);
+    let res =  Array.from(idArr)
+    this.logger.info(`getIdsInCells Len: ${res.length}`)
+    return res
   }
 
   /**
@@ -133,25 +135,22 @@ export default class STC extends Service {
     let allData = {},
       datasIncell = {};
 
-    Object.keys(data).map(cellId => {
-      // 过滤 data，返回 cell 内的轨迹数据
-      if (!cellsId.includes(cellId)){}
-      else {
-        // 将处于不同cell内的轨迹片段合并
-        datasIncell = data[cellId];
-        Object.keys(datasIncell).map((dataId:string) => {
+    cellsId.forEach((cellId:string) => {
+      datasIncell = data[cellId] || {};
+      Object.keys(datasIncell).forEach((dataId:string) => {
           if (!allData[dataId]) {
             allData[dataId] = {};
           }
           Object.assign(allData[dataId], datasIncell[dataId]);
-        });
-      }
-    });
+      })
+    })
 
     const datasArr:STCDataItem[] = [];
 
+    this.logger.info(`getDatasInCells Object Len: ${Object.keys(allData).length}`)
+
     // 对每一条轨迹的片段进行排序, 按照下标排序
-    Object.keys(allData).map((dataId:string) => {
+    Object.keys(allData).forEach((dataId:string) => {
       // 轨迹片段
       const segments = allData[dataId];
       // 轨迹片段下标
@@ -175,22 +174,22 @@ export default class STC extends Service {
       }
 
       // 1. 每段算一条
-      sortedSegments.map((segment, i) => {
-        datasArr.push({
-          id: dataId + '-' + i,
-          data: segment,
-        });
-      });
+      // sortedSegments.map((segment, i) => {
+      //   datasArr.push({
+      //     id: dataId + '-' + i,
+      //     data: segment,
+      //   });
+      // });
 
       // 2. 将每一段合成一条
-      // sortedSegments.map(segment => {
-      //   datasArr.push({
-      //       carNo: dataId,
-      //       points: segment.reduce((a,b)=> a.concat(b),[])
-      //   })
-      // })
+      datasArr.push({
+        id: dataId,
+        data: sortedSegments.reduce((a:Point[],b:Point[]) => a.concat(b),[])
+      })
+
     });
     console.timeEnd('getDatasInCells');
+    this.logger.info(`getDatasInCells Len: ${datasArr.length}`)
     return datasArr;
   }
 

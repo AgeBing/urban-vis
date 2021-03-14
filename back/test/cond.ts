@@ -21,8 +21,11 @@ const DATA_IDS_Taxi = [ // 1
 const DATA_IDS_Weibo = [  // 2
   "ee729804-7da1-11eb-9c38",   // weibo 2
 ]
+const DATA_IDS_PHONE = [
+  "460006741429772"
+]
 
 export {
   TIME, GEO,
-  DATA_IDS_Taxi, DATA_IDS_Weibo
+  DATA_IDS_Taxi, DATA_IDS_Weibo, DATA_IDS_PHONE
 }

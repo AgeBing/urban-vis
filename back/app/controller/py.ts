@@ -80,44 +80,6 @@ export default class PyController extends Controller {
   }
 
 
-  public async queryCellsByDataId(){
-    const { ctx } = this
-    const { originSource:os, id, mode } = ctx.request.body
-    this.logger.info('Python queryByDataId...', ctx.request.body);
-
-    let info:queryResItem|null,
-        cellIds:string[] = []    
-    
-    // 1. 通过 mode 和 id 获取数据查询条件，返回 cellIds 
-    if(os == DS['MobileTraj'] || os === DS['TaxiTraj']){
-      // 1.1 数据转条件
-      let infos = await ctx.service.stc.getSTCInfoOfDatas([id], os)
-      if(infos.length < 1){
-        info = null
-      }else{
-        info = infos[0]
-      }
-    }else if(os === DS['Poi']){
-      info = await ctx.service.py.queryPOIBoxInfoById(id)
-    }else if(os === DS['Weibo']){
-      info = await ctx.service.py.queryWeiboBoxInfoById(id)
-    }
-
-    if(!info){
-      this.logger.error(`无 STC 信息！`)
-      return []
-    }
-
-      // 1.2 条件转cell
-    cellIds = await ctx.service.stc.getCellsFromInfo(info,mode)
-    if(cellIds.length === 0){
-      this.logger.error(`无对应 cell 单元`)
-      return []
-    }
-    console.log("cells len:", cellIds.length)
-    return cellIds
-  }
-
   public async queryByDataId(){
     const { ctx } = this
     const { originSource:os, targetSource:ts, id } = ctx.request.body
@@ -154,6 +116,12 @@ export default class PyController extends Controller {
     ctx.body = res
   }
 
+  /**
+   * 前端查询
+   * 1. 传入一条数据数据id
+   * 2. 获取这条数据经过的 cube cells
+   * 3. 获取经过这些 cells 的某数据源的 详细数据
+   */
   public async queryDetailByDataId(){
     const { ctx } = this
     const { originSource:os, targetSource:ts, id } = ctx.request.body
@@ -193,6 +161,44 @@ export default class PyController extends Controller {
     }
     this.logger.info('Python queryDetailByDataId 返回数据条数', res.length);
     ctx.body = res
+  }
+
+  private async queryCellsByDataId(){
+    const { ctx } = this
+    const { originSource:os, id, mode } = ctx.request.body
+    this.logger.info('Python queryCellsByDataId...', ctx.request.body);
+
+    let info:queryResItem|null,
+        cellIds:string[] = []    
+    
+    // 1. 通过 mode 和 id 获取数据查询条件，返回 cellIds 
+    if(os == DS['MobileTraj'] || os === DS['TaxiTraj']){
+      // 1.1 数据转条件
+      let infos = await ctx.service.stc.getSTCInfoOfDatas([id], os)
+      if(infos.length < 1){
+        info = null
+      }else{
+        info = infos[0]
+      }
+    }else if(os === DS['Poi']){
+      info = await ctx.service.py.queryPOIBoxInfoById(id)
+    }else if(os === DS['Weibo']){
+      info = await ctx.service.py.queryWeiboBoxInfoById(id)
+    }
+
+    if(!info){
+      this.logger.error(`无 STC 信息！`)
+      return []
+    }
+
+      // 1.2 条件转cell
+    cellIds = await ctx.service.stc.getCellsFromInfo(info,mode)
+    if(cellIds.length === 0){
+      this.logger.error(`无对应 cell 单元`)
+      return []
+    }
+    this.logger.info('QueryCellsByDataId Cells Length:', cellIds.length);
+    return cellIds
   }
 }
 
