@@ -6,7 +6,8 @@ import { Point } from "./base";
 export interface Cube{
   config: CubeConfig,
   cells: CubeCell[],
-  cellsInFilter: CubeCell[]
+  cellsInFilter: CubeCell[],
+  locas: LocaCell[]
 }
 
 /**
@@ -44,6 +45,15 @@ export interface CubeCell{
   lng: number,
   time: number, // 开始时间 单位分
   // trajIds: string[],  // 经过该立方体的轨迹id
+}
+
+/**
+ * 时空立方体最底下一层的单元
+ */
+export interface LocaCell{
+  id: number,
+  lat: number, // 中心点 位置
+  lng: number,
 }
 
 export interface GeoParams{

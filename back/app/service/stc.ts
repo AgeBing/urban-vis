@@ -123,6 +123,12 @@ export default class STC extends Service {
     return res
   }
 
+  // 获取数据源中的所有id
+  public async getDataSetIds(source:DS):Promise<string[]> {
+    const data = await this.getData(source, STCIndexType.data2cube);
+    return Object.keys(data)
+  }
+
   /**
    * 经过这些立方体单元的详细数据列表
    * @param cells 时空立方体单元

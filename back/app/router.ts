@@ -27,6 +27,10 @@ export default (app: Application) => {
   router.post('/py/query', controller.py.query);
   router.post('/py/queryByDataId', controller.py.queryByDataId);
 
+  
+  router.get('/py/querySTConfig', controller.other.getSTConfig);
+  router.get('/py/queryDataSetIds', controller.other.queryDataSetIds);
+
   // 用于 Case 展示
   // router.get('/case/taxi', controller.case.taxi);
   // router.get('/case/weibo', controller.case.weibo);

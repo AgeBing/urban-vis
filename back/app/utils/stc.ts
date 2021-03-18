@@ -1,4 +1,4 @@
-import { Cube, CubeConfig, CubeCell, GeoParams, TimeParams } from '@type/cube';
+import { Cube, CubeConfig, CubeCell, LocaCell, GeoParams, TimeParams } from '@type/cube';
 import { BoolOperate } from '@type/base';
 import { Point, GeoPoint } from '@type/base';
 // import { Point } from '@type/base'
@@ -38,6 +38,45 @@ async function _loaSTCCells(): Promise<CubeCell[]> {
 }
 
 /**
+ * 时空立方体底层单元初始化
+ */
+async function _computeLocaCells(cube: Cube) {
+  const cfg:CubeConfig = cube.config,
+        cells: CubeCell[] = cube.cells,
+        locaCells: LocaCell[] = []
+  const { m, n, width } = cfg
+  let locaCellsCount = m * n,
+      _id, i, _cell: CubeCell,
+      _halfWidth = width / 2
+
+  for(i = 0;i < locaCellsCount;i++){
+    _id = i.toString()
+    _cell = cells[i]
+    locaCells.push({
+      id: _id,
+      lng: _cell.lng + _halfWidth,
+      lat: _cell.lat - _halfWidth
+    })
+  }
+  cube.locas = locaCells
+}
+
+
+export function stcId2locaId(stcId:string): string{
+  let cube = cubeInstance
+  if(!cube){
+    throw Error('STC Cube 未导入！')
+  }
+  
+  const cfg:CubeConfig = cube.config
+  const { m, n } = cfg
+  let locaCellsCount = m * n
+
+  return (parseInt(stcId) % locaCellsCount).toString() 
+}
+
+
+/**
  * 初始化时空立方体
  */
 let cubeInstance:Cube;
@@ -49,7 +88,9 @@ async function loadCube(): Promise<Cube> {
       config,
       cells,
       cellsInFilter: [],
+      locas:[]
     };
+    await _computeLocaCells(cube);
     cubeInstance = cube;
     console.log('STC Cube Loaded ~ ');
     console.log('STC Config ', config);
