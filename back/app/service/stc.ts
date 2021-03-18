@@ -2,7 +2,7 @@ import { Service } from 'egg';
 import { Cube, CubeCell, GeoParams, TimeParams, STCDataItem } from '@type/cube';
 import { BoolOperate, DS, Point, QueryDataByMode } from '@type/base';
 import { query, loadCube, timeToSliceIndex } from '../utils/stc';
-import { DEFAULT_GEO, DEFAULT_TIME } from '../utils/stc'
+import { DEFAULT_GEO, DEFAULT_TIME, stcs2locas } from '../utils/stc'
 import { queryRes, queryResItem } from '../controller/py';
 import { timeFormat1 } from '../utils/math';
 
@@ -217,10 +217,10 @@ export default class STC extends Service {
       }
       // 原始数据内的格式
       const { timeRange: t, areaRange: a } = bbx;
-
       return {
         id,
         stcubes,
+        scube: stcs2locas(stcubes),
         bbx: {
           time: [ timeFormat1(t.min), timeFormat1(t.max) ],
           geo: [ a.maxLng, a.minLng, a.maxLat, a.minLat ],

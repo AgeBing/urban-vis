@@ -74,6 +74,13 @@ export function stcId2locaId(stcId:string): string{
 
   return (parseInt(stcId) % locaCellsCount).toString() 
 }
+export function stcs2locas(stcubes:string[]): string[] {
+  let scube:string[] = []
+  for(let i = 0;i < stcubes.length;i++){
+    scube.push(stcId2locaId(stcubes[i]))
+  }
+  return scube
+}
 
 
 /**

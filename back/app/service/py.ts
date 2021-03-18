@@ -3,7 +3,7 @@ import { DS } from '@type/base';
 import { queryRes, queryResItem } from '../controller/py';
 import { WeiboItem } from '@type/weibo';
 import { POIItem } from '@type/poi';
-import { pointToCubeIndex, getCubeCellBbx } from '../utils/stc';
+import { pointToCubeIndex, getCubeCellBbx, stcs2locas } from '../utils/stc';
 import { geoToCubeIndex } from '../utils/stc';
 
 
@@ -64,6 +64,7 @@ export default class Py extends Service {
       return {
         id,
         stcubes: [ cellId ],
+        scube: stcs2locas([cellId]),
         bbx,
       };
     });
@@ -88,6 +89,7 @@ export default class Py extends Service {
       return {
         id,
         stcubes: [ cellId ],
+        scube: stcs2locas([cellId]),
         bbx,
       };
     });
@@ -117,6 +119,7 @@ export default class Py extends Service {
       return {
         id,
         stcubes: [ cubeId ],
+        scube: stcs2locas([cubeId]),
         bbx,
       };
     });
@@ -142,6 +145,7 @@ export default class Py extends Service {
       return {
         id,
         stcubes: [ cubeId ],
+        scube: stcs2locas([cubeId]),
         bbx,
       };
     });
@@ -166,6 +170,7 @@ export default class Py extends Service {
     return {
       id,
       stcubes: [ cubeId ],
+      scube: stcs2locas([cubeId]),
       bbx,
     };
   }
@@ -186,6 +191,7 @@ export default class Py extends Service {
     return {
       id,
       stcubes: [ cellId ],
+      scube: stcs2locas([cellId]),
       bbx,
     };
   }
