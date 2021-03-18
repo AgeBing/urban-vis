@@ -12,7 +12,7 @@ export type queryResItem = {
   id: string, // 数据项 id
   bbx?: Bbx | null // 包围盒
   stcubes?: string[], // 该条数据轨迹传过的 cube cell id
-  scube?: string[]  // 地理单元（与时空单元对应）
+  scube?: number[]  // 地理单元（与时空单元对应）
 } | undefined | null;
 export interface Bbx{
   time: string[],

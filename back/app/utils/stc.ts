@@ -63,7 +63,7 @@ async function _computeLocaCells(cube: Cube) {
 }
 
 
-export function stcId2locaId(stcId:string): string{
+export function stcId2locaId(stcId:string): number{
   let cube = cubeInstance
   if(!cube){
     throw Error('STC Cube 未导入！')
@@ -73,10 +73,10 @@ export function stcId2locaId(stcId:string): string{
   const { m, n } = cfg
   let locaCellsCount = m * n
 
-  return (parseInt(stcId) % locaCellsCount).toString() 
+  return parseInt(stcId) % locaCellsCount
 }
-export function stcs2locas(stcubes:string[]): string[] {
-  let scube:string[] = []
+export function stcs2locas(stcubes:string[]): number[] {
+  let scube:number[] = []
   for(let i = 0;i < stcubes.length;i++){
     scube.push(stcId2locaId(stcubes[i]))
   }

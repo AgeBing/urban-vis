@@ -32,7 +32,7 @@ export default class OtherController extends Controller {
     for(i = 0;i < weibos.length;i++){
       dataSetIds.push(weibos[i].id)
     }
-    for(i = 0;i < taxiIds.length;i++){
+    for(i = 0;i < pois.length;i++){
       dataSetIds.push(pois[i].id)
     }
     ctx.body = dataSetIds
