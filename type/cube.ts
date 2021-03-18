@@ -29,6 +29,7 @@ export interface CubeConfig{
   // 空间上 m * n
   m: number, // 表示 经度范围上有m个cube
   n: number, // 表示 纬度范围上有n个cube
+  scubeNum?: number,
   width: number, 
 
   // 时间 t

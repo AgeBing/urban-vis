@@ -30,6 +30,7 @@ async function _loadSTCConfig(): Promise<CubeConfig> {
     width: c.gridWidth,
     timeSlice: c.splitInterval,
     t: c.splitTimeNum,
+    scubeNum: c.splitLngNum * c.splitLatNum
   };
 }
 async function _loaSTCCells(): Promise<CubeCell[]> {

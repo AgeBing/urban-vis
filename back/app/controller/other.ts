@@ -4,8 +4,9 @@
 
 import { Controller } from 'egg';
 import { loadCube } from '../utils/stc'
-import { CubeConfig, Cube,  } from '@type/cube';
+import { CubeConfig, Cube, LocaCell  } from '@type/cube';
 import { DS } from '@type/base'
+import { HeatMapValue } from '@type/heat'
 
 export default class OtherController extends Controller {
   
@@ -46,8 +47,28 @@ export default class OtherController extends Controller {
 
     const config = {
       // ...cfg,
-      scubeNum: cfg.m * cfg.n
+      scubeNum: cfg.scubeNum
     }
     this.ctx.body = config
+  }
+
+  /**
+   * 区域概率热力图
+   */
+  public async scubeHeatMap() {
+    const cube:Cube = await loadCube()
+    const cfg:CubeConfig = cube.config
+    const locas: LocaCell[] = cube.locas
+    let count = cfg.scubeNum || 100
+
+    let heatMaps: HeatMapValue[] = []
+    locas.map((loca:LocaCell) => {
+      heatMaps.push({
+        value: Math.random() / count,
+        longitude: loca.lng,
+        latitude: loca.lat
+      })
+    })
+    this.ctx.body = heatMaps
   }
 }
