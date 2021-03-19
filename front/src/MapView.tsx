@@ -1,45 +1,65 @@
 import React, { useState, useEffect } from 'react';
 // import { v4 as uuid } from 'uuid';
-// import api from "./util/request";
+import api from "./util/request";
 import Map from './map/Controller'
 // import { LAYER_TYPES,  } from "./map/config"
 import './MapView.scss'
 // import { LayerData } from '@type/layer'
+import {TaxiTrajectory} from '@type/taxi'
+// import { useVAUDCase1 } from './hook/case'
 
-import { useVAUDCase1 } from './hook/case'
-
+import ParticleLayer from './tripLayer/ParticleLayer'
 function MapView(){
-  const datas = useVAUDCase1()
-  // const [datas, setDatas] = useState<LayerData[]>([])
+  // const datas = useVAUDCase1()
+  const [data, setData] = useState([])
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     let dataObjs = []
-  //     const taxis = await api.getTaxi();
-  //     dataObjs.push({
-  //       data: taxis,
-  //       type: LAYER_TYPES["TRAJ_LAYER"],
-  //     })
+  useEffect(() => {
+    const fetchData = async () => {
+      // dataObjs:TaxiTrajectory[] = []
+      let startTime = "2014-01-01 07:00:00"
+      let endTime = "2014-01-01 07:59:59"
+      let startDateTime:any = new Date(startTime)
+      let endDateTime:Date = new Date(endTime)
+      const taxis:TaxiTrajectory[] = await api.queryTaxi( {time:["07:00:00", "07:59:59"]} )
+      let dataObjs:any = taxis.map(taxi=>{
+        let points:any = []
+        let timestamps:any = []
+        taxi.points.forEach(p=>{
+          points.push([p.latitude,p.latitude])
+          let time:any = new Date(p.time)
+          timestamps.push(Math.floor((time-startDateTime)/1000))
+        })
+        return {
+          vector:taxi.id,
+          path:points,
+          timestamps
+        }
+      })
+      // dataObjs.push({
+      //   data: taxis,
+      //   type: LAYER_TYPES["TRAJ_LAYER"],
+      // })
 
-  //     // dataObjs.push({
-  //     //   data: weibos,
-  //     //   type: LAYER_TYPES["HEATMAP_LAYER"],
-  //     // })
+      // dataObjs.push({
+      //   data: weibos,
+      //   type: LAYER_TYPES["HEATMAP_LAYER"],
+      // })
 
-  //     // const phones = await api.getPhone();
-  //     // dataObjs.push({
-  //     //   data: phones,
-  //     //   type: LAYER_TYPES["TRAJ_LAYER"],
-  //     // })
-  //     setDatas(datas.concat(dataObjs));
-  //   }
-  //   fetchData();
-  // }, [])
+      // const phones = await api.getPhone();
+      // dataObjs.push({
+      //   data: phones,
+      //   type: LAYER_TYPES["TRAJ_LAYER"],
+      // })
+      setData(dataObjs);
+    }
+    fetchData();
+  }, [])
 
   // console.log(datas)
   return (
     <div className="map-view">
-      <Map datas={datas}/>
+      {/* <Map datas={datas}/> */}
+      <ParticleLayer trips = {data}/>
     </div>
   )
 }

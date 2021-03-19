@@ -4,6 +4,6 @@ export interface TaxiPoint {
   time: string;
 }
 export  interface TaxiTrajectory {
-  carNo: string;
+  id: string;
   points: TaxiPoint[];
 }
