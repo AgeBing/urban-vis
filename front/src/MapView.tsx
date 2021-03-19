@@ -9,23 +9,25 @@ import {TaxiTrajectory} from '@type/taxi'
 // import { useVAUDCase1 } from './hook/case'
 
 import ParticleLayer from './tripLayer/ParticleLayer'
+
 function MapView(){
-  // const datas = useVAUDCase1()
   const [data, setData] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
       // dataObjs:TaxiTrajectory[] = []
-      let startTime = "2014-01-01 07:00:00"
-      let endTime = "2014-01-01 07:59:59"
+      let startTime = "2014-01-01 07:30:00"
+      // let startTime = "2014-01-14 07:30:00"
+
       let startDateTime:any = new Date(startTime)
-      let endDateTime:Date = new Date(endTime)
-      const taxis:TaxiTrajectory[] = await api.queryTaxi( {time:["07:00:00", "07:59:59"]} )
+      // let endDateTime:Date = new Date(endTime)
+      const taxis:TaxiTrajectory[] = await api.queryTaxi( {time:["07:30:00", "07:59:59"]} )
+      console.log('taxis', taxis)
       let dataObjs:any = taxis.map(taxi=>{
         let points:any = []
         let timestamps:any = []
         taxi.points.forEach(p=>{
-          points.push([p.latitude,p.latitude])
+          points.push([p.longitude,p.latitude])
           let time:any = new Date(p.time)
           timestamps.push(Math.floor((time-startDateTime)/1000))
         })
@@ -58,8 +60,7 @@ function MapView(){
   // console.log(datas)
   return (
     <div className="map-view">
-      {/* <Map datas={datas}/> */}
-      <ParticleLayer trips = {data}/>
+      <ParticleLayer trips={data}/>
     </div>
   )
 }

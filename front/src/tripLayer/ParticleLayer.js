@@ -6,6 +6,8 @@ import {AmbientLight, PointLight, LightingEffect} from '@deck.gl/core';
 import DeckGL from '@deck.gl/react';
 import {PolygonLayer} from '@deck.gl/layers';
 import {TripsLayer} from '@deck.gl/geo-layers';
+import { MAP_INITIAL_VIEW_STATE, MAPBOX_TOKEN, MAP_STYLE } from "../map/config";
+
 
 // Source data CSV
 const DATA_URL = {
@@ -42,53 +44,38 @@ const DEFAULT_THEME = {
   effects: [lightingEffect]
 };
 
-const INITIAL_VIEW_STATE = {
-  longitude: -74,
-  latitude: 40.72,
-  zoom: 13,
-  pitch: 45,
-  bearing: 0
-};
+const INITIAL_VIEW_STATE = MAP_INITIAL_VIEW_STATE
 
-const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
+
 
 const landCover = [[[-74.0, 40.7], [-74.02, 40.7], [-74.02, 40.72], [-74.0, 40.72]]];
 
+const loopLength = 1800, // unit corresponds to the timestamp in source data
+  animationSpeed = 2
+
 export default function ParticleLayer({
   // buildings = DATA_URL.BUILDINGS,
-  trips = DATA_URL.TRIPS,
-  trailLength = 180,
+  trips,
+  trailLength = 50,
   initialViewState = INITIAL_VIEW_STATE,
   mapStyle = MAP_STYLE,
   theme = DEFAULT_THEME,
-  loopLength = 1800, // unit corresponds to the timestamp in source data
-  animationSpeed = 1
 }) {
+  // console.log("trips", trips)
   const [time, setTime] = useState(0);
   const [animation] = useState({});
 
-  const animate = () => {
-    setTime(t => (t + animationSpeed) % loopLength);
-    animation.id = window.requestAnimationFrame(animate);
-  };
-
-  useEffect(
-    () => {
+const animate = () => {
+      setTime(t => (t + animationSpeed) % loopLength);
       animation.id = window.requestAnimationFrame(animate);
-      return () => window.cancelAnimationFrame(animation.id);
-    },
-    [animation]
-  );
+    };
+
+  useEffect(() => {
+    animation.id = window.requestAnimationFrame(animate);
+    return () => window.cancelAnimationFrame(animation.id);
+  },[animation]);
 
   const layers = [
-    // This is only needed when using shadow effects
-    new PolygonLayer({
-      id: 'ground',
-      data: landCover,
-      getPolygon: f => f,
-      stroked: false,
-      getFillColor: [0, 0, 0, 0]
-    }),
     new TripsLayer({
       id: 'trips',
       data: trips,
@@ -123,11 +110,10 @@ export default function ParticleLayer({
       initialViewState={initialViewState}
       controller={true}
     >
-      <StaticMap reuseMaps mapStyle={mapStyle} preventStyleDiffing={true} />
+      <StaticMap 
+          mapStyle={MAP_STYLE}
+          mapboxApiAccessToken={MAPBOX_TOKEN}
+        reuseMaps mapStyle={mapStyle} preventStyleDiffing={true} />
     </DeckGL>
   );
-}
-
-export function renderToDOM(container) {
-  render(<ParticleLayer />, container);
 }
