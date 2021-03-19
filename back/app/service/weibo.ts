@@ -102,21 +102,23 @@ export default class Weibo extends Service {
 
     // 获取数据列表
     const weibos:WeiboItem[] = await this.queryByKeyword(keyword);
-    this.logger.info('传入 cells 数量', cellsId);
+    this.logger.info('传入 cells 数量', cellsId.length);
     this.logger.info('整体 weibo 数据量', weibos.length);
-
+    // console.log(JSON.stringify(cellsId))
     // 过滤是否在时空立方体内
     const weiboInRange:WeiboItem[] = []
     const ps = weibos.map(async (weibo:WeiboItem) => {
       const { time, lat, lng } = weibo;
-      const cellId = await pointToCubeIndex({
+      let cellId = await pointToCubeIndex({
         time,
         longitude: lng,
         latitude: lat,
       });
-      if (cellsId.indexOf(cellId) !== -1) {
+
+      if (cellsId.indexOf(cellId.toString()) !== -1) {
         weiboInRange.push(weibo)
       }
+
     })
     this.logger.info('在 cells 里的 weibo 数据量', weiboInRange.length);
     await Promise.all(ps)

@@ -85,14 +85,15 @@ export default class POI extends Service {
     const poisInRange:POIItem[] = []
 
     this.logger.info('传入 cells 数量', cellsId);
-    this.logger.info('整体 poi 数据量', pois.length);
-    
+    this.logger.info('整体 poi 数据量', pois.length);   
+
     // 3. 数据过滤并返回索引信息
     const ps = pois.map(async (poi:POIItem) => {
       const { longitude, latitude } = poi;
-      const cubeId = (await geoToCubeIndex({ longitude, latitude })).toString();
+      const cubeId = (await geoToCubeIndex({ longitude, latitude }));
+      // console.log(cubeId)
 
-      if (cellsId.indexOf(cubeId) !== -1) {
+      if (cellsId.indexOf(cubeId.toString()) !== -1) {
         poisInRange.push(poi)
       }
     });

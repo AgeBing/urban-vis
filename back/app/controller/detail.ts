@@ -13,8 +13,8 @@ export default class DetailController extends Controller {
   public async queryTrajectoryData(){
     const { ctx } = this 
     // 设置默认条件
-    const { geo , time, source } = ctx.request.body;
-    ctx.request.body = { geo, time }
+    const { geo , time, source, boolOp } = ctx.request.body;
+    ctx.request.body = { geo, time, boolOp }
     this.logger.info(`查询数据源 ${source},条件`,ctx.request.body);
     // 按时空条件过滤时空立方体单元
     const cells = await ctx.service.stc.queryCellsInRange();

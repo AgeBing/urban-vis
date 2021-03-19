@@ -100,6 +100,8 @@ export default class PyController extends Controller {
       return
     }
 
+    this.logger.info(`数据 ${id} 对应的 cell 数`, cellIds.length);
+
     // 2. 根据 cellIds 去数据源中获取数据，返回
     if(ts === DS['MobileTraj'] || ts === DS['TaxiTraj']){
       let dataIds = await ctx.service.stc.getIdsInCells(cellIds, ts)

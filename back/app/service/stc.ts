@@ -237,7 +237,7 @@ export default class STC extends Service {
     let cellIds:string[] = []
     if(mode === QueryDataByMode['STCubes']){
       cellIds = info?.stcubes || []
-      return cellIds
+      return cellIds.map(i => i.toString())
     }
 
     let geo = DEFAULT_GEO,
