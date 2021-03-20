@@ -207,30 +207,44 @@ export default class PyController extends Controller {
   public async mockReq(){
     let res:queryRes = [],
         req
-    while (res.length === 0) {
+    while (res.length === 0 || res.length >= 50) {
       req = await this.makeAvaliableReq()
+      const { attr, source } = req
       this.ctx.request.body = {
-        geo: req.attr?.geo,
-        time: req.attr?.time
+        geo: attr?.geo,
+        time: attr?.time
       }
-      res = await this.ctx.service.py.pyQuery(req.source)
+      if(source === DS.MobileTraj){
+        res = await this.ctx.service.py.pyQuery(source)
+      }else if(source === DS.Weibo){
+        res = await this.ctx.service.py.pyQueryWeibo()
+      }
       console.log(res.length)
     }
     this.ctx.body = req
   }
+
   private async makeAvaliableReq(){
-    let sources = [DS.TaxiTraj, DS.MobileTraj],
+    let sources = [DS.MobileTraj, DS.Weibo],
         source = sources[Math.floor(Math.random() * sources.length)]
-    console.log(source)
-    //1. 获取出租车 id （随机）
-    let taxisId = await this.ctx.service.stc.getDataSetIds(source)
-    let randTaxiId = taxisId[Math.floor(Math.random()*taxisId.length)]
-    let queryRes:queryRes = await this.ctx.service.stc.getSTCInfoOfDatas([randTaxiId], source)
-    let taxiInfo:queryResItem = queryRes[0]
-    
-    const req = {
-      source,
-      attr: taxiInfo?.bbx
+    let req 
+    if(source === DS.MobileTraj){
+      let taxisId = await this.ctx.service.stc.getDataSetIds(source)
+      let randTaxiId = taxisId[Math.floor(Math.random()*taxisId.length)]
+      let queryRes:queryRes = await this.ctx.service.stc.getSTCInfoOfDatas([randTaxiId], source)
+      let taxiInfo:queryResItem = queryRes[0]
+      req = {
+        source,
+        attr: taxiInfo?.bbx
+      }
+    }else if(source === DS.Weibo){
+      let weibos = await this.ctx.service.weibo.list()
+      let weiboId = weibos[Math.floor(Math.random()*weibos.length)].id
+      let weiboInfo:queryResItem = await this.ctx.service.py.queryWeiboBoxInfoById(weiboId)
+      req = {
+        source,
+        attr: weiboInfo?.bbx
+      }
     }
     return req
   }
