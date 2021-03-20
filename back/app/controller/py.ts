@@ -203,6 +203,37 @@ export default class PyController extends Controller {
     this.logger.info('QueryCellsByDataId Cells Length:', cellIds.length);
     return cellIds
   }
+
+  public async mockReq(){
+    let res:queryRes = [],
+        req
+    while (res.length === 0) {
+      req = await this.makeAvaliableReq()
+      this.ctx.request.body = {
+        geo: req.attr?.geo,
+        time: req.attr?.time
+      }
+      res = await this.ctx.service.py.pyQuery(req.source)
+      console.log(res.length)
+    }
+    this.ctx.body = req
+  }
+  private async makeAvaliableReq(){
+    let sources = [DS.TaxiTraj, DS.MobileTraj],
+        source = sources[Math.floor(Math.random() * sources.length)]
+    console.log(source)
+    //1. 获取出租车 id （随机）
+    let taxisId = await this.ctx.service.stc.getDataSetIds(source)
+    let randTaxiId = taxisId[Math.floor(Math.random()*taxisId.length)]
+    let queryRes:queryRes = await this.ctx.service.stc.getSTCInfoOfDatas([randTaxiId], source)
+    let taxiInfo:queryResItem = queryRes[0]
+    
+    const req = {
+      source,
+      attr: taxiInfo?.bbx
+    }
+    return req
+  }
 }
 
 

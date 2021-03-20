@@ -32,7 +32,7 @@ export default (app: Application) => {
   router.get('/py/queryDataSetIds', controller.other.queryDataSetIds);
 
   router.get('/scubeHeatMap', controller.other.scubeHeatMap);
-
+  router.get('/py/mockReq', controller.py.mockReq)
   // 用于 Case 展示
   // router.get('/case/taxi', controller.case.taxi);
   // router.get('/case/weibo', controller.case.weibo);
