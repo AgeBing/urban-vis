@@ -9,13 +9,15 @@ import { timeFormat1 } from '../utils/math';
 const fileUtil = require('../utils/file');
 
 enum STCIndexType{
+  'full',
   'data2cube',
-  'cube2data'
+  'cube2data',
 }
 const FILE_PATH = {
   [(DS.MobileTraj + 1).toString()]: {
     [STCIndexType.data2cube]: 'phoneSDATA.json',
     [STCIndexType.cube2data]: 'phoneSTCube.json',
+    [STCIndexType.full]: 'phone.json',
   },
   [(DS.TaxiTraj + 1).toString()]: {
     [STCIndexType.data2cube]: 'taxiSDATA.json',
@@ -27,6 +29,7 @@ const datas = {
   [(DS.MobileTraj + 1).toString()]: {
     [STCIndexType.data2cube]: null,
     [STCIndexType.cube2data]: null,
+    [STCIndexType.full]: null,
   },
   [(DS.TaxiTraj + 1).toString()]: {
     [STCIndexType.data2cube]: null,
@@ -199,6 +202,25 @@ export default class STC extends Service {
     return datasArr;
   }
 
+
+  /**
+   * 经过这些立方体单元的完整数据列表
+   * @param cells 时空立方体单元
+   * @param source 数据源
+   */
+  public async getFullDatasInCells(cellsId: string[], source:DS): Promise<STCDataItem[]> {
+    const dataIds = await this.getIdsInCells(cellsId, source);
+    const data = await this.getData(source, STCIndexType.full);
+    this.logger.info('getFullDatasInCells',dataIds)
+    let datas:STCDataItem[] = []
+    dataIds.forEach((dataId:string) => {
+      datas.push({
+        id: dataId,
+        data: data[dataId]['points']
+      })
+    })
+    return datas
+  }
 
   /**
    * 获取每个数据的 索引信息

@@ -13,14 +13,20 @@ export default class DetailController extends Controller {
   public async queryTrajectoryData(){
     const { ctx } = this 
     // 设置默认条件
-    const { geo , time, source, boolOp } = ctx.request.body;
+    const { geo , time, source, boolOp, boolFull = false } = ctx.request.body;
     ctx.request.body = { geo, time, boolOp }
     this.logger.info(`查询数据源 ${source},条件`,ctx.request.body);
     // 按时空条件过滤时空立方体单元
     const cells = await ctx.service.stc.queryCellsInRange();
     const cellsId = cells.map(c => c.id.toString());
+    
     // 拿着时空立方体单元去获取详细数据
-    const stcDatas: STCData = await ctx.service.stc.getDatasInCells(cellsId, source);
+    let stcDatas:STCData = []
+    if(!boolFull){
+      stcDatas = await ctx.service.stc.getDatasInCells(cellsId, source);
+    }else{
+      stcDatas = await ctx.service.stc.getFullDatasInCells(cellsId, source);
+    }
 
     let trajs: Traj[] = [];
     trajs = stcDatas.map((d: STCDataItem) => ({
