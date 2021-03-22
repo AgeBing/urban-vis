@@ -21,7 +21,6 @@ export default (app: Application) => {
   router.post('/weibo', controller.detail.transfer);
   router.post('/poi',   controller.detail.transfer);
   router.post('/queryByDataId', controller.py.queryDetailByDataId);
-  router.post('/querySinglePhoneTraj', controller.case1.querySinglePhoneTraj);
 
   // Python 后端的接口
   router.post('/py/query', controller.py.query);

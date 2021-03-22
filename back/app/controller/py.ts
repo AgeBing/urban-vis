@@ -207,7 +207,7 @@ export default class PyController extends Controller {
   public async mockReq(){
     let res:queryRes = [],
         req
-    while (res.length === 0 || res.length >= 50) {
+    while (res.length <= 10 || res.length >= 100) {
       req = await this.makeAvaliableReq()
       const { attr, source } = req
       this.ctx.request.body = {

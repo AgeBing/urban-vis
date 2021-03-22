@@ -20,6 +20,7 @@ export default class OtherController extends Controller {
     let weibos = await ctx.service.weibo.list()
     let pois = await ctx.service.poi.list()
 
+    console.log("各种类轨迹数目：",{taxi:taxiIds.length,phone:phoneIds.length,weibo:weibos.length,poi:pois.length})
     let dataSetIds:string[] = []
 
     let i
