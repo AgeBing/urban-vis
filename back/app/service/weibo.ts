@@ -4,8 +4,8 @@ import { SpaceTimeParam, Point } from '@type/base';
 import { isPointWithinRect, isPointWithinInterval } from '../utils/math';
 import { pointToCubeIndex} from '../utils/stc';
 
-const fileUtil = require('../utils/file');
-const PATH = 'weibo.json';
+// const fileUtil = require('../utils/file');
+// const PATH = 'weibo.json';
 
 /**
  * Weibo Service
@@ -16,7 +16,10 @@ export default class Weibo extends Service {
    * 获取微博数据列表
    */
   public async list() : Promise<WeiboItem []> {
-    return await fileUtil.readJson(PATH);
+    // return await fileUtil.readJson(PATH);
+    const { app } = this
+   const weibos = await app.mysql.select('weibo');
+    return weibos
   }
 
   public async queryByKeyword(keyword:string):Promise<WeiboItem []> {
