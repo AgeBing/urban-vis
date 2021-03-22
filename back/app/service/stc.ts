@@ -135,7 +135,6 @@ export default class STC extends Service {
    * @param source 数据源
    */
   public async getDatasInCells(cellsId: string[], source:DS): Promise<STCDataItem[]> {
-    console.time('getDatasInCells');
     const data = await this.getData(source, STCIndexType.cube2data);
 
     let allData = {},
@@ -153,7 +152,6 @@ export default class STC extends Service {
 
     const datasArr:STCDataItem[] = [];
 
-    this.logger.info(`getDatasInCells Object Len: ${Object.keys(allData).length}`)
 
     // 对每一条轨迹的片段进行排序, 按照下标排序
     Object.keys(allData).forEach((dataId:string) => {
@@ -172,7 +170,8 @@ export default class STC extends Service {
         for (let i = 1; i < segmentIds.length; i++) {
           if ((Number(segmentIds[i]) - Number(segmentIds[i - 1])) === 1) { // 相邻的
             const lastIdx = sortedSegments.length - 1;
-            sortedSegments[lastIdx].push(...segments[segmentIds[i]]);
+            sortedSegments[lastIdx] = sortedSegments[lastIdx].concat(segments[segmentIds[i]])
+            // sortedSegments[lastIdx].push(...segments[segmentIds[i]]);
           } else { //  非相邻
             sortedSegments.push(segments[segmentIds[i]]);
           }
@@ -181,6 +180,7 @@ export default class STC extends Service {
 
       // 1. 每段算一条
       // sortedSegments.map((segment, i) => {
+      //   // l += segment.length
       //   datasArr.push({
       //     id: dataId + '-' + i,
       //     data: segment,
@@ -194,8 +194,8 @@ export default class STC extends Service {
       })
 
     });
-    console.timeEnd('getDatasInCells');
-    this.logger.info(`getDatasInCells Len: ${datasArr.length}`)
+
+    this.logger.info(`getDatasInCells 返回数据量: ${datasArr.length}`)
     return datasArr;
   }
 
