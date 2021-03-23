@@ -42,7 +42,7 @@ const sweibo = Symbol();
 export default class PyController extends Controller {
   public async query() {
     const { ctx } = this;
-    const { source, attr, keyword } = ctx.request.body;
+    const { source, attr, keyword, step } = ctx.request.body;
     this.logger.info('Python 端数据查询...', ctx.request.body);
 
     // 条件转换
@@ -50,16 +50,19 @@ export default class PyController extends Controller {
       let { geo, time } = attr;
       if(!geo)  geo = DEFAULT_GEO
       if(!time) time = DEFAULT_TIME
-      ctx.request.body = { geo, time, keyword }
+      ctx.request.body = { 
+        geo, time,
+        keyword, step
+      }
     }else{
       ctx.request.body = {
         geo: DEFAULT_GEO,
         time: DEFAULT_TIME,
-        keyword
+        keyword, step
       }
     }
 
-    let res = [];
+    let res:queryRes = [];
     res = await Funcfactory(
       {
         [staxi]: this.service.py.pyQuery.bind(this, source),
@@ -73,11 +76,42 @@ export default class PyController extends Controller {
 
     if (!res) return [];
 
+    res = await this.InjectCaseData(res)
     this.logger.info('返回数据条数', res.length);
-    // 返回全部轨迹数据
-    // res = res.slice(0, 100)
-    // this.logger.info('删减后数据条数', res.length);
     ctx.body = res;
+  }
+
+  // 插入指定的 Case 数据
+  public async InjectCaseData(res:queryRes){
+    const { ctx } = this
+    const { step } = ctx.request.body;
+
+    console.log(`step: ${step}`)
+    let injectData: queryResItem = null
+    switch(step){
+      case 0:  // 微博数据
+        injectData = {
+          id: '1e16f656-8b01-11eb-927a',
+          bbx: {
+            'time': ['08:00:00', "08:30:00"],
+            'geo':[
+              120.698332,
+              120.692110,
+              27.9986075,
+              27.9898919
+            ]
+          },
+          stcubes:['4962'],
+          scube: [62]
+        }
+      break
+
+      default:
+        return res
+    }
+    res.unshift(injectData)
+    this.logger.info(`插入 case 数据`, injectData)
+    return res
   }
 
 
