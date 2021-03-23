@@ -82,6 +82,7 @@ export default class PyController extends Controller {
   }
 
   // 插入指定的 Case 数据
+  // 需要确保 dataId 对应的数据在数据库里也有，让 queryByDataId 接口能查到
   public async InjectCaseData(res:queryRes){
     const { ctx } = this
     const { step } = ctx.request.body;
@@ -89,22 +90,51 @@ export default class PyController extends Controller {
     console.log(`step: ${step}`)
     let injectData: queryResItem = null
     switch(step){
-      case 0:  // 微博数据
+      case 0:  // 微博数据条件，用于查 taxi
         injectData = {
           id: '1e16f656-8b01-11eb-927a',
           bbx: {
-            'time': ['08:00:00', "08:30:00"],
-            'geo':[
-              120.698332,
-              120.692110,
-              27.9986075,
-              27.9898919
-            ]
+            "geo": [
+              120.69833278656004,
+              120.69211006164551,
+              27.998607559462243,
+              27.98989193447871
+            ],
+            "time": ["08:00:00", "08:30:00"]
           },
           stcubes:['4962'],
           scube: [62]
         }
       break
+      case 1:  // 微博数据条件，用于查 people
+        injectData = {
+          id: '1e16f656-8b01-11eb-927a',
+          bbx: {
+            "geo": [
+              120.69833278656004,
+              120.69211006164551,
+              27.998607559462243,
+              27.98989193447871
+            ],
+            "time": ["07:00:00", "08:30:00"]
+          },
+          stcubes:['4962'],
+          scube: [62]
+        }
+      break
+      case 2:  // 行人数据条件，用于查 weibo
+      case 3:  // 行人数据条件，用于查 taxi
+        injectData = {
+          id: '460008794504403',
+          bbx: {
+            "geo": [120.698445, 120.678937, 28.003419, 27.989737],
+            "time": ["07:00:00", "08:30:00"]
+          },
+          stcubes:['4962'],
+          scube: [62]
+        }
+      break
+
 
       default:
         return res
