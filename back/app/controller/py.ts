@@ -191,7 +191,7 @@ export default class PyController extends Controller {
    */
   public async queryDetailByDataId(){
     const { ctx } = this
-    const { originSource:os, targetSource:ts, id } = ctx.request.body
+    const { originSource:os, targetSource:ts, id, boolFull = false } = ctx.request.body
     this.logger.info('Python queryByDataId...', ctx.request.body);
     if(os === undefined || ts === undefined || id === undefined){
       this.logger.error('传参不完整！')
@@ -210,7 +210,12 @@ export default class PyController extends Controller {
 
     // 2. 根据 cellIds 去数据源中获取数据，返回
     if(ts === DS['MobileTraj'] || ts === DS['TaxiTraj']){
-        const stcDatas: STCData = await ctx.service.stc.getDatasInCells(cellIds, ts);
+        let stcDatas: STCData  = []  
+        if(!boolFull){
+          stcDatas = await ctx.service.stc.getDatasInCells(cellIds, ts);
+        }else{
+          stcDatas = await ctx.service.stc.getFullDatasInCells(cellIds, ts);
+        }
         let trajs: Traj[] = [];
         trajs = stcDatas.map((d: STCDataItem) => ({
           id: d.id,
