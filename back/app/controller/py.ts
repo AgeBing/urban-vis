@@ -235,6 +235,27 @@ export default class PyController extends Controller {
     ctx.body = res
   }
 
+  // 获取某条数据对应的条件是啥
+  public async queryInfoByDataId(){
+    const { ctx } = this
+    const { source:os, ids } = ctx.request.body
+    let infos:queryResItem[] = []
+    // 1. 通过 mode 和 id 获取数据查询条件，返回 cellIds 
+    if(os == DS['MobileTraj'] || os === DS['TaxiTraj']){
+      // 1.1 数据转条件
+      infos = await ctx.service.stc.getSTCInfoOfDatas(ids, os)
+    }else if(os === DS['Poi']){
+      infos = await Promise.all(ids.map(async function(id:string):Promise<queryResItem>{
+        return await ctx.service.py.queryPOIBoxInfoById(id)
+      }))
+    }else if(os === DS['Weibo']){
+      infos = await Promise.all(ids.map(async function(id:string):Promise<queryResItem>{
+        return await ctx.service.py.queryWeiboBoxInfoById(id)
+      }))
+    }
+    ctx.body = infos
+  }
+
   private async queryCellsByDataId(){
     const { ctx } = this
     const { originSource:os, id, mode } = ctx.request.body
