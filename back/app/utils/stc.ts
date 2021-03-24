@@ -5,6 +5,7 @@ import { Point, GeoPoint } from '@type/base';
 
 import { isPointWithinRect, isPointWithinInterval } from './math';
 import * as moment from 'moment';
+import { Bbx } from '../controller/py';
 const fileUtil = require('./file');
 const _ = require('lodash/array');
 
@@ -163,6 +164,30 @@ async function pointToCubeIndex(point: Point): Promise<string> {
 }
 
 
+async function bbxToCubeCellIds(bbx:Bbx): Promise<string[]>{
+  const config: CubeConfig = (await loadCube()).config;
+  const { timeSlice, m, n } = config;
+  const { geo, time } = bbx
+  const geoIdxRange = [
+    await geoToCubeIndex({ longitude:geo[1], latitude:geo[3] }),
+    await geoToCubeIndex({ longitude:geo[0], latitude:geo[2] })
+  ]
+  const timeIdxRange = [
+    timeToSliceIndex(time[0], timeSlice),
+    timeToSliceIndex(time[1], timeSlice)
+  ]
+
+  // console.log(geoIdxRange, timeIdxRange)
+  let cellIdsSet:Set<string>= new Set()
+  for(let i = geoIdxRange[0]; i <= geoIdxRange[1];i++){
+    for(let j = timeIdxRange[0]; j <= timeIdxRange[1];j++){
+      let cellId = m * n * j + i
+      cellIdsSet.add(cellId.toString())
+    }
+  }
+  return Array.from(cellIdsSet)
+}
+
 // 计算 cube cell 对应的范围信息，若超出范围 范围 null
 async function getCubeCellBbx(idx:string) {
   const cube = await loadCube();
@@ -307,4 +332,5 @@ export {
   geoToCubeIndex,
   pointToCubeIndex,
   getCubeCellBbx,
+  bbxToCubeCellIds
 };

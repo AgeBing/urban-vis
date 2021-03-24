@@ -3,7 +3,7 @@ import { DS } from '@type/base';
 import { queryRes, queryResItem } from '../controller/py';
 import { WeiboItem } from '@type/weibo';
 import { POIItem } from '@type/poi';
-import { pointToCubeIndex, getCubeCellBbx, stcs2locas } from '../utils/stc';
+import { pointToCubeIndex, getCubeCellBbx, stcs2locas, bbxToCubeCellIds } from '../utils/stc';
 import { geoToCubeIndex } from '../utils/stc';
 
 
@@ -175,6 +175,28 @@ export default class Py extends Service {
     };
   }
   public async queryWeiboBoxInfoById(id:string): Promise<queryResItem>{
+    // Case weibo 数据，需要保证 queryDataById 的条件和直接 query 的条件一致
+    console.log(`queryWeiboBoxInfoById ${id}`)
+    if(id === '1e16f656-8b01-11eb-927a'){
+      const bbx = {
+          "geo": [
+            120.69833278656004,
+            120.69211006164551,
+            27.998607559462243,
+            27.98989193447871
+          ],
+          "time": ["07:00:00", "08:30:00"]
+      },
+      stcubes = await bbxToCubeCellIds(bbx)
+      return {
+        id,
+        bbx, 
+        stcubes,
+        scube:stcs2locas(stcubes)
+      }
+    }
+
+    // 正常模式
     const weibo:WeiboItem | null  = await this.ctx.service.weibo.queryById(id)
     if(!weibo) return null
     const { time, lat, lng } = weibo;
