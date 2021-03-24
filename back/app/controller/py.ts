@@ -256,6 +256,14 @@ export default class PyController extends Controller {
     ctx.body = infos
   }
 
+  public async getOneDataById(){
+    const { ctx } = this
+    const { source, ids } = ctx.request.body
+    let res = await Promise.all(ids.map(async function(id:string){
+      return ctx.service.stc.getOneFullData(id, source)
+    }))
+    ctx.body = res
+  }
   private async queryCellsByDataId(){
     const { ctx } = this
     const { originSource:os, id, mode } = ctx.request.body
