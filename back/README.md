@@ -6,6 +6,12 @@
 - `npm i`  安装依赖
 - `npm start`  运行
 
+##### 多数据源环境
+1. 在 `config` 下新增 `config.casex.ts` 配置文件
+  - 在配置文件中写入 `dataSourcePath` 用于配置*数据文件地址*，app 运行时自动添加该目录至 file.ts 工具中
+2. 运行时通过 `EGG_SERVER_ENV=casex npm run dev` 或 `EGG_SERVER_ENV=casex npm run start` 来制定运行环境, 读取 casex 对应的配置项
+
+
 ### 数据接口
 参考 [api.md](./api.md)
 

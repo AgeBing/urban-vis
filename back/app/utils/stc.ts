@@ -17,11 +17,12 @@ const FILES_PATH = {
 /**
  * 一、初始化部分
  */
-export const DEFAULT_GEO =  [120.747524, 120.593029, 28.027669, 27.958246]
-export const DEFAULT_TIME = ['00:00:00','23:59:59']
+export let DEFAULT_GEO =  [120.747524, 120.593029, 28.027669, 27.958246]
+export let DEFAULT_TIME = ['00:00:00','23:59:59']
+
 async function _loadSTCConfig(): Promise<CubeConfig> {
   const c = await fileUtil.readJson(FILES_PATH.CUBE_CONFIG);
-  return {
+  let res = {
     MaxLng: c.area.maxLng,
     MaxLat: c.area.maxLat,
     MinLng: c.area.minLng,
@@ -33,6 +34,8 @@ async function _loadSTCConfig(): Promise<CubeConfig> {
     t: c.splitTimeNum,
     scubeNum: c.splitLngNum * c.splitLatNum
   };
+  DEFAULT_GEO = [res['MaxLng'], res['MinLng'], res['MaxLat'], res['MinLat']]
+  return res
 }
 async function _loaSTCCells(): Promise<CubeCell[]> {
   const cells:CubeCell[] = await fileUtil.readJson(FILES_PATH.CUBE_CELLS);
@@ -106,7 +109,6 @@ async function loadCube(): Promise<Cube> {
   }
   return cubeInstance;
 }
-loadCube();
 
 
 /**
