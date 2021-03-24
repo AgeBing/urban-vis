@@ -128,7 +128,7 @@ export default class PyController extends Controller {
           id: '460008794504403',
           bbx: {
             "geo": [120.698445, 120.678937, 28.003419, 27.989737],
-            "time": ["07:00:00", "08:30:00"]
+            "time": ["08:00:00", "08:30:00"]
           },
           stcubes:['4962'],
           scube: [62]
