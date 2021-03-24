@@ -22,6 +22,7 @@ export default (app: Application) => {
   router.post('/poi',   controller.detail.transfer);
   router.post('/queryByDataId', controller.py.queryDetailByDataId);
   router.post('/queryInfoByDataId', controller.py.queryInfoByDataId);
+  router.post('/getOneDataById', controller.py.getOneDataById);
 
   // Python 后端的接口
   router.post('/py/query', controller.py.query);

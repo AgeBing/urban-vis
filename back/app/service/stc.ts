@@ -222,6 +222,14 @@ export default class STC extends Service {
     return datas
   }
 
+  public async getOneFullData(dataId:string, source:DS): Promise<STCDataItem> {
+    const data = await this.getData(source, STCIndexType.full);
+    return {
+      id: dataId,
+      data: data[dataId]['points']
+    }
+  }
+
   /**
    * 获取每个数据的 索引信息
    * @param datasID 数据 id
