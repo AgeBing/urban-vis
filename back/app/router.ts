@@ -30,7 +30,7 @@ export default (app: Application) => {
 
   
   router.get('/py/querySTConfig', controller.other.getSTConfig);
-  router.get('/py/queryDataSetIds', controller.other.queryDataSetIds);
+  // router.get('/py/queryDataSetIds', controller.other.queryDataSetIds);
 
   router.get('/scubeHeatMap', controller.other.scubeHeatMap);
   router.get('/py/mockReq', controller.py.mockReq)
