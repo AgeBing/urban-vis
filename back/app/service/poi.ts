@@ -72,9 +72,9 @@ export default class POI extends Service {
   }
 
   public async queryById(id:string): Promise<POIItem|null>{
-    const pois = await this.app.mysql.select(TABLE,{ id });
-    if(Array.isArray(pois) && pois.length === 1){
-      return pois[0]
+    const poi = await this.app.mysql.get(TABLE,{ uid:id });
+    if(poi){
+      return poi
     }else{
       return null
     }
