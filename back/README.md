@@ -27,7 +27,9 @@ npm run dev #起端口运行
 
 ## 测试
 具体参考 [egg单元测试](https://eggjs.org/zh-cn/core/unittest.html)
+
 在 `test` 对应目录中加入测试用例，通过 `npm run test <filePath>` 运行单个测试文件。
+
 也可直接通过 `npm run test` 运行所有测试用例，且耗时较长。
 
 ## 部署
@@ -60,10 +62,18 @@ npm run start
 #### 多数据源环境
 由于在找 Case 的时候需要 Load 多个不同版本的数据，因此需要从多个不同配置的文件起几个不同实例的端口
 1. 在 `config` 下新增 `config.casex.ts` 配置文件
-  - 在配置文件中写入 `dataSourcePath` 用于配置*数据文件地址*，app 运行时自动添加该目录至 file.ts 工具中
+
+  在配置文件中写入 `dataSourcePath` 用于配置*数据文件地址*，app 运行时自动添加该目录至 file.ts 工具中
+
 2. 运行时通过 `EGG_SERVER_ENV=casex npm run dev` 或 `EGG_SERVER_ENV=casex npm run start` 来制定运行环境, 读取 casex 对应的配置项
 
 #### 其他需要改进点
-- 条件校验：
-- 错误（异常情况处理）：
-- 性能监控：对运行服务的**性能指标**以及报错异常等进行监控
+
+- [ ] 模块重构：当前各模块间调用关系较乱，导致排错困难，应该适当优化
+- [ ] 条件校验：
+
+- [ ] 错误（异常情况处理）：
+
+- [ ] 性能监控：对运行服务的**性能指标**以及报错异常等进行监控
+
+  
