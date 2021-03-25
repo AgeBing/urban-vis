@@ -14,14 +14,15 @@ export default (appInfo: EggAppInfo) => {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
   };
 
-  config.cors = { 
-    credentials: true,
-    origin: 'http://localhost:3000', 
-    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS'
-  }
+  // config.cors = {
+  //   credentials: true,
+  //   origin: ctx => ctx.get('origin'),
+  //   allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS'
+  // }
 
   // https://eggjs.org/zh-cn/core/security.html#%E5%AE%89%E5%85%A8%E5%A8%81%E8%83%81csrf%E7%9A%84%E9%98%B2%E8%8C%83
   config.security = {
+    domainWhiteList:['*'],
     csrf: {
       enable: false,
     },
@@ -48,6 +49,8 @@ export default (appInfo: EggAppInfo) => {
     agent: false,
   };
 
+  // config.dataSourcePath = "../../../data/large-area-data/" // case2
+  config.dataSourcePath = "../../../data/node-server-data-caseVersion/"  // case1
   // the return config will combines to EggAppConfig
   return {
     ...config,
